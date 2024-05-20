@@ -1,0 +1,61 @@
+body {
+    background-color: #3a87ad; /* Light gray background */
+    font-family: Arial, sans-serif; /* Specify a fallback font family */
+    
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Make the container fill the entire viewport height */
+}
+
+.card {
+    width: 320px; /* Set a fixed width for the card */
+    padding: 20px;
+    border: 1px solid #ddd; /* Add a subtle border */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a light shadow */
+    background-color: #fff; /* White background */
+}
+
+.card-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%; /* Full width input fields */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    width: 100%; /* Full width button */
+    padding: 12px;
+    font-size: 16px;
+    background-color: #007bff; /* Bootstrap primary color */
+    border: none;
+    border-radius: 4px;
+    color: #fff; /* White text */
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .card {
+        width: 100%; /* Adjust card width for small screens */
+    }
+}

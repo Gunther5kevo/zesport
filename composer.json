@@ -1,0 +1,22 @@
+{
+    "name": "guru/zesport",
+    "description": "video",
+    "type": "library",
+    "require": {
+        "php-ffmpeg/php-ffmpeg": "^1.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Guru\\Zesport\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kevo"
+        }
+    ],
+    "minimum-stability": "stable"
+}

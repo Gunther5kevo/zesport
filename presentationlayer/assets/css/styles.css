@@ -1,0 +1,380 @@
+/* General Styles */
+body {
+	font-family: 'Open Sans', sans-serif;
+	color: #333;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+	font-family: 'Alfa Slab One', cursive;
+  }
+
+  .navbar {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #EEF7FF;
+}
+
+.nav-section {
+    padding-top: 30px; 
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #3a87ad;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .nav-item.active .nav-link {
+    color: #7AB2B2;
+}
+
+.navbar-scroll {
+    background-color:#3a87ad;
+}
+
+  /* Carousel Section */
+.img-section {
+  padding: 30px; 
+  background-color: #f8f9fa; 
+}
+
+.carousel-item img {
+  max-width: 100%;
+  height: 500px; 
+  padding: 10px; 
+}
+
+.carousel-caption {
+  background-color: rgba(0, 0, 0, 0.5); 
+  padding: 20px; 
+  border-radius: 5px; 
+}
+
+.carousel-caption h5 {
+  font-size: 1.5rem; 
+  color: #fff; 
+}
+
+.carousel-caption p {
+  font-size: 1rem; 
+  color: #fff; 
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(255, 255, 255, 0.5); 
+  border-radius: 50%; 
+}
+
+@media (max-width: 768px) {
+  .carousel-caption {
+      display: block !important;
+  }
+  .carousel-caption h5,
+  .carousel-caption p {
+      font-size: 1.2rem;
+  }
+}
+
+.features-section {
+  padding: 80px 0;
+  background-color: #EEF7FF;
+  text-align: center;
+}
+
+.feature-item {
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  height: 100%; 
+}
+
+.feature-item h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.feature-item p {
+  font-size: 16px;
+  color: #D67900;
+  line-height: 1.6;
+}
+
+.feature-item img {
+  width: 100%;
+  height: auto; 
+  border-radius: 4px;
+}
+
+.read-more {
+  display: inline-block;
+  margin-top: 15px;
+  color: #74759280;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+}
+
+/* Basic styles for carousel container */
+.carousel-info {
+  margin-top: 20px;
+}
+
+/* Styles for carousel item */
+.carousel-info .item {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Styles for content inside carousel item */
+.carousel-info .content h6 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.carousel-info .content span {
+  font-weight: bold;
+  color: #007bff; /* Blue color for scores */
+}
+
+/* Owl Carousel styles */
+.owl-carousel .owl-item {
+  display: inline-block;
+  width: 100%; /* Adjust width of carousel items */
+}
+
+/* Responsive styles for Owl Carousel */
+@media (min-width: 576px) {
+  .owl-carousel .owl-item {
+      width: 50%; /* Display 2 items per row on smaller screens */
+  }
+}
+
+@media (min-width: 768px) {
+  .owl-carousel .owl-item {
+      width: 33.33%; /* Display 3 items per row on medium screens and above */
+  }
+}
+
+
+  /* Video Section */
+
+.video-section {
+  padding: 40px 0; 
+}
+
+.video-item {
+  margin-bottom: 30px; 
+  text-align: center; 
+}
+
+.video-thumbnail img {
+  width: 100%; 
+  height: auto; 
+  cursor: pointer; 
+  transition: opacity 0.3s ease; 
+}
+
+.video-thumbnail img:hover {
+  opacity: 0.8; 
+}
+
+.video-thumbnail .play-video {
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  z-index: 2; 
+}
+
+/* Modal Video Styles */
+.modal-video {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); 
+  z-index: 9999; 
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  /* Responsive CSS adjustments */
+  .video-item {
+    margin-bottom: 20px; 
+  }
+}
+/* Styling for Video Section Headings */
+
+.video-section h2 {
+  font-family: 'Alfa Slab One', cursive;
+  font-size: 15px; 
+  color: #2d6987;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
+
+
+.video-item h3 {
+  font-size: 10px; 
+  margin-bottom: 10px; 
+  color:#D67900;
+}
+
+.video-item p {
+  font-size: 16px; 
+  color: #640a0a; 
+}
+
+/* Gallery Section Styles */
+
+
+.gallery {
+  padding: 60px 0; /* Adjust vertical padding as needed */
+  background-color: #f8f9fa; /* Set background color for the gallery section */
+}
+
+.gallery .section-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.gallery .section-head h4 {
+  font-size: 24px;
+  color: #333; /* Set heading text color */
+}
+
+.gallery .underline {
+  width: 60px;
+  height: 3px;
+  background-color: #007bff; /* Set underline color */
+  margin: 20px auto; /* Center the underline */
+}
+
+.gallery .row {
+  margin-bottom: 20px; /* Add bottom margin between rows */
+}
+
+.gallery .col-md-4 {
+  padding: 0 15px; /* Add horizontal padding to columns */
+}
+
+/* Image Styling */
+.gallery .col-md-4 {
+  display: flex;
+  align-items: center; /* Center image vertically */
+  justify-content: center; /* Center image horizontally */
+  height: 300px; /* Set a fixed height for the image container */
+  overflow: hidden; /* Hide any overflow (e.g., for taller images) */
+}
+
+.gallery img.img-fluid {
+  width: auto; /* Allow image width to adjust based on height */
+  height: 100%; /* Fill the entire height of the container */
+  border-radius: 8px; /* Add border radius to images */
+  object-fit: cover; /* Ensure images maintain aspect ratio and cover their container */
+}
+
+@media (max-width: 767px) {
+  .gallery .col-md-4 {
+      padding: 0; /* Remove padding on smaller screens */
+  }
+}
+
+/* Lightbox (Image Popup) Styles */
+.mfp-zoom-in .mfp-container,
+.mfp-zoom-in .mfp-content {
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+
+
+
+/* Testimonial Section Styles */
+
+.testimonial-section {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 40px 0; /* Adjust padding as needed */
+}
+
+.testimonial {
+  text-align: center;
+  max-width: 300px;
+}
+
+.testimonial img {
+  width: 60px;
+  height: 60px; /* Ensure height matches width for a circular shape */
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+
+  /* Comment Section */
+ /* Custom styles for news page */
+ .news-section {
+	padding: 40px 0;
+}
+
+.news-item {
+	margin-bottom: 40px;
+}
+
+.news-item img {
+	width: 100%;
+	height: auto;
+	margin-bottom: 20px;
+}
+
+.news-item h2 {
+	font-size: 24px;
+	margin-bottom: 10px;
+}
+
+.news-item .meta {
+	font-size: 14px;
+	color: #468847;
+	margin-bottom: 20px;
+}
+
+.comments-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+.comment-form {
+	margin-top: 20px;
+}
+
+.comments-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment-form {
+  margin-top: 20px;
+}
