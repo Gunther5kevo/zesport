@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="assets/css/football.css">
 </head>
 <body>
-  
+
     <nav id="custom-navbar">
         <div class="navbar-logo">
-            <a href="index.php"><img src="path_to_your_logo_image.png" alt="Logo"></a>
+            <a href="index.php"><img src="assets/img/logo.png" alt="Logo"></a>
         </div>
         <ul class="navbar-links">
             <li><a href="index.php">Home</a></li>
@@ -22,16 +22,20 @@
         </ul>
     </nav>
 
-    <div class="container">
-      
+    <!-- New Section with Background Image
+    <section class="landscape-section">
+        <span class="mask bg-gradient-primary opacity-6">
+            <img src="assets/img/basketball2.jpg" alt="Background Image">
+        </span>
+    </section> -->
 
+    <div class="container">
         <?php
-        
         if (isset($_GET['action'])) {
             $action = $_GET['action'];
             if ($action === 'results') {
                 include('football_results.php');
-            }elseif ($action  == 'fixtures'){
+            } elseif ($action === 'fixtures') {
                 include('football_fixtures.php');
             } elseif ($action === 'news') {
                 include('football_news.php');
@@ -43,9 +47,9 @@
         }
         ?>
     </div>
-
-   
-    
-
+    <?php include('./footer.php'); ?>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

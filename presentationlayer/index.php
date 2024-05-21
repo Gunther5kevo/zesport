@@ -202,12 +202,12 @@ include ('../datalayer/server.php');
 
     <section class="testimonial-section">
         <div class="testimonial">
-            <img src="" alt="User 1">
+            <img src="assets/img/avatar/profile1.jpg" alt="User 1">
             <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium."</p>
             <span class="user-name">John Doe</span>
         </div>
         <div class="testimonial">
-            <img src="user2.jpg" alt="User 2">
+            <img src="assets/img/avatar/profile2.jpg" alt="User 2">
             <p>"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem."</p>
             <span class="user-name">Jane Smith</span>
         </div>

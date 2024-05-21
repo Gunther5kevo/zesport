@@ -76,13 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
             'referee' => $referee
         ]);
 
-        // Redirect to admin dashboard after successful insertion
-        header('Location: admin_dashboard.php');
-        exit();
-    } catch (PDOException $e) {
-        // Handle database error
-        echo 'Insertion failed: ' . $e->getMessage();
-    }
+        
+            // Your database connection and insertion code here
+        
+            // Display success alert and redirect
+            echo '<script>alert("Team created successfully!"); window.location.href = "admin_dashboard.php";</script>';
+            exit();
+        } catch (PDOException $e) {
+            // Handle database error
+            echo '<script>alert("Insertion failed: ' . $e->getMessage() . '"); window.location.href = "admin_dashboard.php";</script>';
+            exit();
+        }
+        
 }
 
 //Basketball fixture 
@@ -269,56 +274,161 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
     }
 }
 
-//Handle team creations
-//Basketball teams
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_basketball_team'])) {
+
+//Creating Teams 
+
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_football_team"])) {
+    // Include database connection
+    
+
+    // Get form data
     $team_name = $_POST['team_name'];
 
-    $sql = "INSERT INTO basketball_teams (team_name) VALUES (:team_name)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':team_name', $team_name);
-
-    try {
-        $stmt->execute();
-        echo "<script>alert('Team added successfully.');</script>";
-    } catch (PDOException $e) {
-        echo "<script>alert('Error adding team: " . $e->getMessage() . "');</script>";
-    }
-}
-
-//Footbal Teams
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_football_team'])) {
-    $team_name = $_POST['team_name'];
-
+    // Insert data into the database
     $sql = "INSERT INTO teams (team_name) VALUES (:team_name)";
     $stmt = $pdo->prepare($sql);
+
+    // Bind parameters
     $stmt->bindParam(':team_name', $team_name);
 
-    try {
-        $stmt->execute();
-        echo "<script>alert('Team added successfully.');</script>";
-    } catch (PDOException $e) {
-        echo "<script>alert('Error adding team: " . $e->getMessage() . "');</script>";
+    // Execute statement
+    if ($stmt->execute()) {
+        // Display success alert
+        echo '<script>alert("Team created successfully!");</script>';
+        // Redirect back to create_teams.php after 2 seconds
+        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+    } else {
+        // Display error alert
+        echo '<script>alert("Error: Unable to create team.");</script>';
+        // Redirect back to create_teams.php after 2 seconds
+        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
     }
+    
 }
 
-//Rugby Teams
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_rugby_team'])) {
+//Creating Rugby Teams
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_rugby_team"])) {
+    
+    
+
+    // Get form data
     $team_name = $_POST['team_name'];
 
+    // Insert data into the database
     $sql = "INSERT INTO rugby_teams (team_name) VALUES (:team_name)";
     $stmt = $pdo->prepare($sql);
+
+    // Bind parameters
     $stmt->bindParam(':team_name', $team_name);
 
-    try {
-        $stmt->execute();
-        echo "<script>alert('Team added successfully.');</script>";
-    } catch (PDOException $e) {
-        echo "<script>alert('Error adding team: " . $e->getMessage() . "');</script>";
+    // Execute statement
+    if ($stmt->execute()) {
+        // Display success alert
+        echo '<script>alert("Team created successfully!");</script>';
+        // Redirect back to create_teams.php after 2 seconds
+        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+    } else {
+        // Display error alert
+        echo '<script>alert("Error: Unable to create team.");</script>';
+        // Redirect back to create_teams.php after 2 seconds
+        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
     }
+    
 }
 
+//Creating Baketball teams
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_basketball_team"])) {
+    // Include database connection
+    
+
+    // Get form data
+    $team_name = $_POST['team_name'];
+
+    // Insert data into the database
+    $sql = "INSERT INTO basketball_teams (team_name) VALUES (:team_name)";
+    $stmt = $pdo->prepare($sql);
+
+    // Bind parameters
+    $stmt->bindParam(':team_name', $team_name);
+
+    // Execute statement
+    if ($stmt->execute()) {
+        // Display success alert
+        echo '<script>alert("Team created successfully!");</script>';
+        // Redirect back to create_teams.php after 2 seconds
+        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+    } else {
+        // Display error alert
+        echo '<script>alert("Error: Unable to create team.");</script>';
+        // Redirect back to create_teams.php after 2 seconds
+        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+    }
+    
+}
+
+//img upload
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_image'])) {
+    $title = htmlspecialchars($_POST['title']);
+    $description = htmlspecialchars($_POST['description']);
+    $image = $_FILES['image'];
+
+    // Define the target directory
+    $targetDir = "../presentationlayer/assets/img/avatar/";
+    $targetFile = $targetDir . basename($image['name']);
+    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+    // Check if the file is an actual image
+    $check = getimagesize($image['tmp_name']);
+    if ($check === false) {
+        $_SESSION['error'] = "File is not an image.";
+    }
+
+    // Check if the file already exists
+    if (file_exists($targetFile)) {
+        $_SESSION['error'] = "Sorry, file already exists.";
+    }
+
+    // Check file size (5MB maximum)
+    if ($image['size'] > 5000000) {
+        $_SESSION['error'] = "Sorry, your file is too large.";
+    }
+
+    // Allow certain file formats
+    $allowedFormats = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!in_array($imageFileType, $allowedFormats)) {
+        $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+    }
+
+    // Try to upload the file
+    if (!isset($_SESSION['error']) && move_uploaded_file($image['tmp_name'], $targetFile)) {
+        
+        $image_url = $targetFile; // Relative path from the project root
+        $stmt = $pdo->prepare("INSERT INTO features (title, description, image_url) VALUES (?, ?, ?)");
+        if ($stmt->execute([$title, $description, $image_url])) {
+            $_SESSION['success'] = "The file " . htmlspecialchars(basename($image['name'])) . " has been uploaded and the record has been added to the database.";
+        } else {
+            $_SESSION['error'] = "Sorry, there was an error inserting the record into the database.";
+        }
+    } elseif (!isset($_SESSION['error'])) {
+        $_SESSION['error'] = "Sorry, there was an error uploading your file.";
+    }
+    
+    header("Location: admin_dashboard.php");
+    exit();
+}
+
+
 ?>
+
+
+
+
+
+
+
+
 
 
 
