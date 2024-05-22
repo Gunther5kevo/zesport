@@ -7,12 +7,14 @@ body {
 
 h1 {
     font-size: 36px;
+    font-family: "Times New Roman", Times, serif;
     color: #007bff; 
     margin-bottom: 20px;
 }
 
 h2 {
     text-align: center;
+    font-family: "Times New Roman", Times, serif;
     font-size: 24px;
     color: #2d6987;
     margin-bottom: 16px;

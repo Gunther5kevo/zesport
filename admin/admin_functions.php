@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         $stmt = $pdo->prepare($query);
         $stmt->execute([$title, $videoPath, $thumbnailPath, $category]);
 
-        header('Location: admin_dashboard.php');
+        header('Location: upload_videos.php');
         exit();
     } else {
         // Handle file upload error

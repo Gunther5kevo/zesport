@@ -1,5 +1,6 @@
 <?php
 include ('../datalayer/server.php');
+include('../admin/includes/navbar.php')
 ?>
 
 <!DOCTYPE html>
@@ -14,36 +15,6 @@ include ('../datalayer/server.php');
 </head>
 <body>
 <main>
-    <section class="nav-section">
-        <nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">ZEsport</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="football.php">Football</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="news.php">News</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="basketball.php">Basketball</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="rugby.php">Rugby</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </section>
-
-    
-
     <section class="img-section">
         <div class="container-fluid">
             <div id="sportsCarousel" class="carousel slide" data-ride="carousel">
@@ -96,27 +67,64 @@ include ('../datalayer/server.php');
             </div>
         </div>
     </section> 
+
+    <!-- features -->
+    <section class="feature-section">
+    <style>
+    .container{
+        margin-bottom: 30px;
+    }
+    .card {
+        height: 500px;
+        border-radius: 5px; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        transition: box-shadow 0.3s ease; 
+        margin-bottom: 30px;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+        
+    }
+    .btn-primary{
+        bottom: 10px;
+        transform: translateX(100%);
+        margin-top: 12px;;
+        background-color: #1C1D3C;
+
+    }
        
-    <section class="features-section">
-    <?php
-        include('../datalayer/features.php');
-        $features = fetchFeatures($pdo);
-     ?>
+    </style>
+
     <div class="container">
-        <div class="row">
-            <?php foreach ($features as $feature) : ?>
-                <div class="col-md-4">
-                    <div class="feature-item">
-                        <h3><?php echo htmlspecialchars($feature['title']); ?></h3>
-                        <p><?php echo htmlspecialchars($feature['description']); ?></p>
-                        <img src="<?php echo htmlspecialchars($feature['image_url']); ?>" class="d-block w-100" alt="<?php echo htmlspecialchars($feature['title']); ?>">
-                        <a href="<?php echo htmlspecialchars($feature['link_url']); ?>" class="read-more">Read More</a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+    <?php
+    include('../datalayer/features.php');
+    $features = fetchFeatures($pdo);
+
+    if (!empty($features)) {
+        echo '<div class="row">';
+        foreach ($features as $feature) {
+            echo '<div class="col-md-4">';
+            echo '<div class="card feature-item">';
+            echo '<img src="' . $feature['image_url'] . '" class="card-img-top" alt="' . $feature['title'] . '">';
+            echo '<div class="card-body">';
+            echo '<h3 class="card-title">' . htmlspecialchars($feature['title']) . '</h3>';
+            echo '<p class="card-text">' . htmlspecialchars($feature['description']) . '</p>';
+            echo '<a href="' . $feature['link_url'] . '" class="read-more">Read More</a>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+        }
+        echo '</div>';
+    } else {
+        echo "<p>No features found</p>";
+    }
+    ?>
     </div>
     </section>
+
+
+
 
     <section carousel2-section>
     <div class="carousel-info">
@@ -128,36 +136,53 @@ include ('../datalayer/server.php');
     </section>
       
     <section class="video-section">
-        <?php
-            include('../datalayer/video-section.php');
-            $categories = ['football', 'basketball', 'rugby'];
-            $videosByCategory = [];
+  <?php
+  include('../datalayer/video-section.php');
 
-            foreach ($categories as $category) {
-             $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
-            }
-        ?>
-        <div class="container">
-        <?php foreach ($videosByCategory as $category => $videos) : ?>
-        <h2><?php echo htmlspecialchars(ucwords($category)) ?> Highlights</h2>
-        <div class="row">
-            <?php foreach ($videos as $video) : ?>
-                <div class="col-md-4 mb-4">
-                    <div class="video-item">
-                        <h3><?php echo htmlspecialchars($video['title']); ?></h3>
-                        <p><?php echo htmlspecialchars($video['description']); ?></p>
-                        <div class="video-thumbnail">
-                            <a href="news.php?video_url=<?php echo urlencode($video['url']); ?>&video_title=<?php echo urlencode($video['title']); ?>&video_description=<?php echo urlencode($video['description']); ?>">
-                                <img src="<?php echo htmlspecialchars($video['thumbnail']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>">
-                            </a>
-                        </div>
-                    </div>
+  // Define the categories
+  $categories = ['football', 'basketball', 'rugby'];
+
+  // Initialize an empty array to store videos by category
+  $videosByCategory = [];
+
+  // Fetch videos for each category
+  foreach ($categories as $category) {
+      $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
+  }
+  ?>
+  
+  <div class="container">
+    <div class="row">
+      <?php foreach ($videosByCategory as $category => $videos) : ?>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-header">
+              <h2><?php echo htmlspecialchars(ucwords($category)) ?> Highlights</h2>
+            </div>
+            <div class="card-body">
+              <?php foreach ($videos as $video) : ?>
+                <div class="video-item">
+                  <h3><?php echo htmlspecialchars($video['title']); ?></h3>
+                  <p><?php echo htmlspecialchars($video['description']); ?></p>
+                  <div class="video-thumbnail">
+                    <a href="news.php?video_url=<?php echo urlencode($video['url']); ?>&video_title=<?php echo urlencode($video['title']); ?>&video_description=<?php echo urlencode($video['description']); ?>">
+                      <img src="<?php echo htmlspecialchars($video['thumbnail']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>">
+                    </a>
+                  </div>
                 </div>
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+            </div>
+          </div>
         </div>
-        <?php endforeach; ?>
+         <?php endforeach; ?>
         </div>
+     </div>
     </section>
+
+
+
+
+
     <section class="gallery">
         <div class="container">
         <div class="section-head">

@@ -1,5 +1,6 @@
 <?php
 include('../datalayer/server.php');
+include('../admin/includes/navbar.php')
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,30 +15,6 @@ include('../datalayer/server.php');
 <body>
 
 <main>
-<section class="nav-section">
-        <nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">ZEsport</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="football.php">Football</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="basketball.php">Basketball</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="rugby.php">Rugby</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-</section>
     <?php
         include('../datalayer/blog.php');
         
@@ -81,42 +58,44 @@ include('../datalayer/server.php');
 
     
     <section class="video-section">
-    <?php
-        include('../datalayer/video-section.php');
-        $categories = ['football', 'basketball', 'rugby'];
-        $videosByCategory = [];
+  <?php
+  include('../datalayer/video-section.php');
 
-        foreach ($categories as $category) {
-            $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
-        }
-    ?>
-        <div class="container">
-        <?php foreach ($videosByCategory as $category => $videos) : ?>
-            <h2><?php echo htmlspecialchars(ucwords($category)) ?> Highlights</h2>
-            <div class="row">
-                <?php foreach ($videos as $video) : ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="video-item">
-                            <h3><?php echo htmlspecialchars($video['title']); ?></h3>
-                            <p><?php echo htmlspecialchars($video['description']); ?></p>
-                            <div class="video-thumbnail">
-                                <!-- Video Player -->
-                                <video width="320" height="240" controls>
-                                    <source src="<?php echo htmlspecialchars($video['url']); ?>" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <!-- Thumbnail (Optional) -->
-                                <a href="news.php?video_url=<?php echo urlencode($video['url']); ?>&video_title=<?php echo urlencode($video['title']); ?>&video_description=<?php echo urlencode($video['description']); ?>">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+  // Define the categories
+  $categories = ['football', 'basketball', 'rugby'];
+
+  // Initialize an empty array to store videos by category
+  $videosByCategory = [];
+
+  // Fetch videos for each category
+  foreach ($categories as $category) {
+      $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
+  }
+  ?>
+
+  <div class="container">
+    <?php foreach ($videosByCategory as $category => $videos) : ?>
+      <h2><?php echo htmlspecialchars(ucwords($category)) ?> Highlights</h2>
+      <div class="row">
+        <?php foreach ($videos as $video) : ?>
+          <div class="col-md-4 mb-4">
+            <div class="video-item">
+              <h3><?php echo htmlspecialchars($video['title']); ?></h3>
+              <p><?php echo htmlspecialchars($video['description']); ?></p>
+              <div class="video-thumbnail">
+                <!-- Video Player -->
+                <video width="100%" controls>
+                  <source src="<?php echo htmlspecialchars($video['url']); ?>" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
+          </div>
         <?php endforeach; ?>
-        </div>
-    </section>
-
+      </div>
+    <?php endforeach; ?>
+  </div>
+</section>
 
 
 </main>
