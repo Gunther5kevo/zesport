@@ -48,7 +48,7 @@
                     </li>
                    
                     <li class="nav-item">
-                        <a class="nav-link" href="../presenationlayer/news.php">News</a>
+                        <a class="nav-link" href="../presentationlayer/news.php">News</a>
                     </li>              
                    
                     <li class="nav-item">

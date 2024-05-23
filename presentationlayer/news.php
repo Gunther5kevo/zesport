@@ -58,44 +58,46 @@ include('../admin/includes/navbar.php')
 
     
     <section class="video-section">
-  <?php
-  include('../datalayer/video-section.php');
+      <?php
+      include('../datalayer/video-section.php');
 
-  // Define the categories
-  $categories = ['football', 'basketball', 'rugby'];
+      // Define the categories
+      $categories = ['football', 'basketball', 'rugby'];
 
-  // Initialize an empty array to store videos by category
-  $videosByCategory = [];
+      // Initialize an empty array to store videos by category
+      $videosByCategory = [];
 
-  // Fetch videos for each category
-  foreach ($categories as $category) {
-      $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
-  }
-  ?>
+      // Fetch videos for each category
+      foreach ($categories as $category) {
+          $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
+      }
+      ?>
 
-  <div class="container">
-    <?php foreach ($videosByCategory as $category => $videos) : ?>
-      <h2><?php echo htmlspecialchars(ucwords($category)) ?> Highlights</h2>
-      <div class="row">
-        <?php foreach ($videos as $video) : ?>
-          <div class="col-md-4 mb-4">
-            <div class="video-item">
-              <h3><?php echo htmlspecialchars($video['title']); ?></h3>
-              <p><?php echo htmlspecialchars($video['description']); ?></p>
-              <div class="video-thumbnail">
-                <!-- Video Player -->
-                <video width="100%" controls>
-                  <source src="<?php echo htmlspecialchars($video['url']); ?>" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
+      <div class="container">
+        <?php foreach ($videosByCategory as $category => $videos) : ?>
+          <h2 class="section-heading"><?php echo ucfirst($category) ?> Highlights</h2>
+          <div class="row">
+            <?php foreach ($videos as $video) : ?>
+              <div class="col-md-3 mb-4">
+                <div class="card">
+                  <div class="card-header"><?php echo htmlspecialchars($video['title']); ?></div>
+                  <div class="card-body">
+                    <div class="video-thumbnail">
+                      <!-- Video Player -->
+                      <video class="card-img-top" width="100%" controls>
+                        <source src="<?php echo htmlspecialchars($video['url']); ?>" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                    <p class="card-text"><?php echo htmlspecialchars($video['description']); ?></p>
+                  </div>
+                </div>
               </div>
-            </div>
+            <?php endforeach; ?>
           </div>
         <?php endforeach; ?>
       </div>
-    <?php endforeach; ?>
-  </div>
-</section>
+    </section>
 
 
 </main>

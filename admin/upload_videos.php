@@ -1,10 +1,11 @@
 <?php
-include('./admin_functions.php');
+
 include('includes/header.php')
 ?>
 
 
 <div class="video-upload">
+    <?= alertMessage();?>
     <h3>Upload New Video</h3>
     <form method="POST" enctype="multipart/form-data" class="row g-3">
         <div class="col-md-6">

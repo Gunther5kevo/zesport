@@ -1,10 +1,5 @@
 <?php
-session_start();
 
-if (!isset($_SESSION['admin_id'])) {
-    header('Location: admin_login.php');
-    exit();
-}
 
 // Include necessary files and setup database connection
 require '../vendor/autoload.php'; // Include autoloader for FFMpeg library
@@ -12,6 +7,8 @@ use FFMpeg\FFMpeg;
 use FFMpeg\Coordinate\TimeCode;
 
 include('../datalayer/server.php'); // Include database connection file
+include('functions.php');
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     // Ensure a file was selected for upload
@@ -19,39 +16,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         // Get video details
         $videoName = $_FILES['video']['name'];
         $videoTmp = $_FILES['video']['tmp_name'];
-        $title = $_POST['title'];
-        $category = $_POST['category'];
+        $title = isset($_POST['title']) ? $_POST['title'] : '';
+        $category = isset($_POST['category']) ? $_POST['category'] : '';
 
-        $videoPath = '../presentationlayer/assets/videos/' . $videoName;
-        move_uploaded_file($videoTmp, $videoPath);
+        // Destination paths
+        $videoDirectory = '../presentationlayer/assets/videos/';
+        $thumbnailDirectory = '../presentationlayer/assets/thumbnails/';
 
-        // Generate thumbnail path
-        $thumbnailPath = '../presentationlayer/assets/videos/' . pathinfo($videoName, PATHINFO_FILENAME) . '.png';
+        // Generate unique file names
+        $videoPath = $videoDirectory . uniqid() . '_' . $videoName;
+        $thumbnailPath = $thumbnailDirectory . uniqid() . '_' . pathinfo($videoName, PATHINFO_FILENAME) . '.png';
 
-        // Create FFMpeg instance
-        $ffmpeg = FFMpeg::create([
-            'ffmpeg.binaries'  => 'C:\ProgramData\chocolatey\bin\ffmpeg.exe', 
-            'ffprobe.binaries' => 'C:\ProgramData\chocolatey\bin\ffprobe.exe', // Specify path to ffprobe binary
-        ]);
+        // Move uploaded files to destination directories
+        if (move_uploaded_file($videoTmp, $videoPath)) {
+            // Create FFMpeg instance
+            $ffmpeg = FFMpeg::create([
+                'ffmpeg.binaries'  => 'C:\ProgramData\chocolatey\bin\ffmpeg.exe', 
+                'ffprobe.binaries' => 'C:\ProgramData\chocolatey\bin\ffprobe.exe', // Specify path to ffprobe binary
+            ]);
 
-        // Open uploaded video using FFMpeg
-        $video = $ffmpeg->open($videoPath);
+            // Open uploaded video using FFMpeg
+            $video = $ffmpeg->open($videoPath);
 
-        // Generate thumbnail at 10 seconds (adjust as needed)
-        $video->frame(TimeCode::fromSeconds(10))->save($thumbnailPath);
+            // Generate thumbnail at 10 seconds (adjust as needed)
+            $video->frame(TimeCode::fromSeconds(10))->save($thumbnailPath);
 
-        // Insert video details into database
-        $query = "INSERT INTO videos (title, url, thumbnail, category, upload_date) VALUES (?, ?, ?, ?, NOW())";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$title, $videoPath, $thumbnailPath, $category]);
+            // Insert video details into database
+            $query = "INSERT INTO videos (title, url, thumbnail, category, upload_date) VALUES (:title, :url, :thumbnail, :category, NOW())";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':url', $videoPath);
+            $stmt->bindParam(':thumbnail', $thumbnailPath);
+            $stmt->bindParam(':category', $category);
 
-        header('Location: upload_videos.php');
-        exit();
+            if ($stmt->execute()) {
+                header('Location: upload_videos.php');
+                exit();
+            } else {
+                echo "Error inserting video details into database.";
+            }
+        } else {
+            echo "Error moving uploaded video to destination directory.";
+        }
     } else {
         // Handle file upload error
         echo "Error uploading video.";
     }
 }
+
 
 // Football fixture
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
@@ -76,21 +88,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
             'referee' => $referee
         ]);
 
-        
-            // Your database connection and insertion code here
-        
-            // Display success alert and redirect
-            echo '<script>alert("Team created successfully!"); window.location.href = "admin_dashboard.php";</script>';
-            exit();
-        } catch (PDOException $e) {
-            // Handle database error
-            echo '<script>alert("Insertion failed: ' . $e->getMessage() . '"); window.location.href = "admin_dashboard.php";</script>';
-            exit();
-        }
-        
+        // Set success message
+        $_SESSION['status'] = "Fixture created successfully!";
+        // Redirect to admin dashboard
+        header("Location: admin_dashboard.php");
+        exit();
+    } catch (PDOException $e) {
+        // Set error message
+        $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
+        // Redirect to admin dashboard
+        header("Location: admin_dashboard.php");
+        exit();
+    }
 }
 
+
+
 //Basketball fixture 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_basketball_fixture'])) {
     $match_date = $_POST['match_date'];
     $home_team = $_POST['home_team'];
@@ -113,16 +128,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_basketball_fix
             'referee' => $referee
         ]);
 
+        // Set success message
+        $_SESSION['status'] = "Basketball fixture created successfully!";
         // Redirect to admin dashboard after successful insertion
         header('Location: admin_dashboard.php');
         exit();
     } catch (PDOException $e) {
-        // Handle database error
-        echo 'Insertion failed: ' . $e->getMessage();
+        // Set error message
+        $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
+        // Redirect to admin dashboard
+        header('Location: admin_dashboard.php');
+        exit();
     }
 }
 
+
     //rugby fixtures
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rugby_fixture'])) {
         $match_date = $_POST['match_date'];
         $home_team = $_POST['home_team'];
@@ -145,17 +167,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rugby_fixture'
                 'referee' => $referee
             ]);
     
+            // Set success message
+            $_SESSION['status'] = "Rugby fixture created successfully!";
             // Redirect to admin dashboard after successful insertion
             header('Location: admin_dashboard.php');
             exit();
         } catch (PDOException $e) {
-            // Handle database error
-            echo 'Insertion failed: ' . $e->getMessage();
+            // Set error message
+            $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
+            // Redirect to admin dashboard
+            header('Location: admin_dashboard.php');
+            exit();
         }
 }
+    
+
+    
     // Scores
     //Football scores
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_football_scores'])) {
         // Check if all required fields are set
         if (isset($_POST['fixture_id'], $_POST['home_score'], $_POST['away_score'])) {
@@ -174,16 +203,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_football_scores
     
             try {
                 $stmt->execute();
-                echo "<script>alert('Scores updated successfully.');</script>";
+                // Display success alert
+                $_SESSION['status'] = 'Scores updated successfully.';
             } catch (PDOException $e) {
-                echo "<script>alert('Error updating scores: " . $e->getMessage() . "');</script>";
-            } 
-                echo "<script>alert('All fields are required.');</script>";
+                // Display error alert
+                $_SESSION['status'] = 'Error updating scores: ' . $e->getMessage();
             }
-            
+        } else {
+            // Display alert for missing fields
+            $_SESSION['status'] = 'All fields are required.';
+        }
+        // Redirect back to the same page after processing
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit();
     }
     
+    
     //Basketball Scores
+    
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_basketball_scores'])) {
         // Check if all required fields are set
         if (isset($_POST['fixture_id'], $_POST['home_score'], $_POST['away_score'])) {
@@ -202,16 +239,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_basketball_scor
     
             try {
                 $stmt->execute();
-                echo "<script>alert('Scores updated successfully.');</script>";
+                // Display success alert
+                $_SESSION['status'] = 'Scores updated successfully.';
             } catch (PDOException $e) {
-                echo "<script>alert('Error updating scores: " . $e->getMessage() . "');</script>";
-            } 
-                echo "<script>alert('All fields are required.');</script>";
+                // Display error alert
+                $_SESSION['status'] = 'Error updating scores: ' . $e->getMessage();
             }
-            
-    } 
+        } else {
+            // Display alert for missing fields
+            $_SESSION['status'] = 'All fields are required.';
+        }
+        // Redirect back to the same page after processing
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit();
+}
     
-    //Rugby fixtures
+    //Rugby Scores
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_rugby_scores'])) {
         // Check if all required fields are set
         if (isset($_POST['fixture_id'], $_POST['home_score'], $_POST['away_score'])) {
@@ -279,39 +322,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
 
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_football_team"])) {
-    // Include database connection
-    
+    // Assuming $pdo is your PDO database connection object
+    $team_name = isset($_POST['team_name']) ? $_POST['team_name'] : '';
 
-    // Get form data
-    $team_name = $_POST['team_name'];
+    if (!empty($team_name)) {
+        try {
+            // Prepare the SQL statement with a named placeholder
+            $sql = "INSERT INTO teams (team_name) VALUES (:team_name)";
+            $stmt = $pdo->prepare($sql);
 
-    // Insert data into the database
-    $sql = "INSERT INTO teams (team_name) VALUES (:team_name)";
-    $stmt = $pdo->prepare($sql);
+            // Bind the parameter to the named placeholder
+            $stmt->bindParam(':team_name', $team_name);
 
-    // Bind parameters
-    $stmt->bindParam(':team_name', $team_name);
-
-    // Execute statement
-    if ($stmt->execute()) {
-        // Display success alert
-        echo '<script>alert("Team created successfully!");</script>';
-        // Redirect back to create_teams.php after 2 seconds
-        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+            // Execute the prepared statement
+            if ($stmt->execute()) {
+                redirect('create_teams.php', "Football team created successfully!");
+            } else {
+                redirect('create_teams.php', "Error: Unable to create football team.");
+            }
+        } catch (PDOException $e) {
+            // Handle database errors
+            redirect('create_teams.php', "Database error: " . $e->getMessage());
+        }
     } else {
-        // Display error alert
-        echo '<script>alert("Error: Unable to create team.");</script>';
-        // Redirect back to create_teams.php after 2 seconds
-        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+        redirect('create_teams.php', "Team name is required.");
     }
-    
 }
 
 //Creating Rugby Teams
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_rugby_team"])) {
-    
-    
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_rugby_team"])) {
     // Get form data
     $team_name = $_POST['team_name'];
 
@@ -324,20 +364,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_rugby_team"])) 
 
     // Execute statement
     if ($stmt->execute()) {
-        // Display success alert
-        echo '<script>alert("Team created successfully!");</script>';
-        // Redirect back to create_teams.php after 2 seconds
-        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+        // Set success message in session
+        $_SESSION['status'] = 'Team created successfully!';
     } else {
-        // Display error alert
-        echo '<script>alert("Error: Unable to create team.");</script>';
-        // Redirect back to create_teams.php after 2 seconds
-        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+        // Set error message in session
+        $_SESSION['status'] = 'Error: Unable to create team.';
     }
-    
+
+    // Redirect back to create_teams.php
+    header('Location: create_teams.php');
+    exit();
 }
 
+
+
 //Creating Baketball teams
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_basketball_team"])) {
     // Include database connection
     
@@ -354,21 +396,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_basketball_team
 
     // Execute statement
     if ($stmt->execute()) {
-        // Display success alert
-        echo '<script>alert("Team created successfully!");</script>';
-        // Redirect back to create_teams.php after 2 seconds
-        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+        // Set success message in session
+        $_SESSION['status'] = 'Team created successfully!';
     } else {
-        // Display error alert
-        echo '<script>alert("Error: Unable to create team.");</script>';
-        // Redirect back to create_teams.php after 2 seconds
-        echo '<script>window.setTimeout(function(){ window.location.href = "create_teams.php"; }, 2000);</script>';
+        // Set error message in session
+        $_SESSION['status'] = 'Error: Unable to create team.';
     }
-    
+
+    // Redirect back to create_teams.php
+    header('Location: create_teams.php');
+    exit();
 }
 
-//img upload
 
+
+//img upload
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_image'])) {
     $title = htmlspecialchars($_POST['title']);
     $description = htmlspecialchars($_POST['description']);
@@ -382,43 +424,84 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_image'])) {
     // Check if the file is an actual image
     $check = getimagesize($image['tmp_name']);
     if ($check === false) {
-        $_SESSION['error'] = "File is not an image.";
+        $_SESSION['status'] = "File is not an image.";
     }
 
     // Check if the file already exists
     if (file_exists($targetFile)) {
-        $_SESSION['error'] = "Sorry, file already exists.";
+        $_SESSION['status'] = "Sorry, file already exists.";
     }
 
     // Check file size (5MB maximum)
     if ($image['size'] > 5000000) {
-        $_SESSION['error'] = "Sorry, your file is too large.";
+        $_SESSION['status'] = "Sorry, your file is too large.";
     }
 
     // Allow certain file formats
     $allowedFormats = ['jpg', 'jpeg', 'png', 'gif'];
     if (!in_array($imageFileType, $allowedFormats)) {
-        $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $_SESSION['status'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
     }
 
     // Try to upload the file
-    if (!isset($_SESSION['error']) && move_uploaded_file($image['tmp_name'], $targetFile)) {
+    if (!isset($_SESSION['status']) && move_uploaded_file($image['tmp_name'], $targetFile)) {
         
         $image_url = $targetFile; // Relative path from the project root
         $stmt = $pdo->prepare("INSERT INTO features (title, description, image_url) VALUES (?, ?, ?)");
         if ($stmt->execute([$title, $description, $image_url])) {
-            $_SESSION['success'] = "The file " . htmlspecialchars(basename($image['name'])) . " has been uploaded and the record has been added to the database.";
+            $_SESSION['status'] = "The file " . htmlspecialchars(basename($image['name'])) . " has been uploaded and the record has been added to the database.";
         } else {
-            $_SESSION['error'] = "Sorry, there was an error inserting the record into the database.";
+            $_SESSION['status'] = "Sorry, there was an error inserting the record into the database.";
         }
-    } elseif (!isset($_SESSION['error'])) {
-        $_SESSION['error'] = "Sorry, there was an error uploading your file.";
+    } elseif (!isset($_SESSION['status'])) {
+        $_SESSION['status'] = "Sorry, there was an error uploading your file.";
     }
     
     header("Location: admin_dashboard.php");
     exit();
 }
 
+
+//Adding and Editing users
+
+if (isset($_POST['saveUser'])) {
+   
+    $name = isset($_POST['name']) ? $_POST['name'] : '';
+    $phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+    $email = isset($_POST['email']) ? $_POST['email'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $role = isset($_POST['role']) ? $_POST['role'] : '';
+    $is_ban = isset($_POST['is_ban']) ? ($_POST['is_ban'] == true ? 1 : 0) : 0;
+
+    if (!empty($name) && !empty($email) && !empty($phone) && !empty($password)) {
+        try {
+            // Prepare the SQL statement with named placeholders
+            $sql = "INSERT INTO users (name, phone, email, password, role, is_ban) 
+                    VALUES (:name, :phone, :email, :password, :role, :is_ban)";
+            $stmt = $pdo->prepare($sql);
+
+            // Bind parameters to named placeholders
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':role', $role);
+            $stmt->bindParam(':is_ban', $is_ban);
+
+            // Execute the prepared statement
+            if ($stmt->execute()) {
+                redirect('users.php', 'User/Admin added successfully');
+            } else {
+                redirect('users-create.php', 'Something went wrong');
+            }
+        } catch (PDOException $e) {
+            // Handle database errors
+            redirect('users-create.php', 'Database error: ' . $e->getMessage());
+        }
+    } else {
+        redirect('users-create.php', 'All fields are required');
+    }
+}
 
 ?>
 

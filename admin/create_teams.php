@@ -1,11 +1,12 @@
 <?php
-include('./admin_functions.php');
+
 include('includes/header.php')
 ?>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
+        <?= alertMessage();?>
         <p class="text-sm mb-0 text-capitalize">Football Teams</p>
         <form method="POST" action="admin_functions.php" class="row g-3">
             <div class="col-md-6">
@@ -24,6 +25,7 @@ include('includes/header.php')
 <div class="row">
     <div class="col-md-12">
         <div class="card">
+        <?= alertMessage();?>
         <p class="text-sm mb-0 text-capitalize">Rugby Teams</p>
         <form method="POST" action="admin_functions.php" class="row g-3">
             <div class="col-md-6">
@@ -42,6 +44,7 @@ include('includes/header.php')
 <div class="row">
     <div class="col-md-12">
         <div class="card">
+        <?= alertMessage();?>
         <p class="text-sm mb-0 text-capitalize">Basketball Teams</p>
         <form method="POST" action="admin_functions.php" class="row g-3">
             

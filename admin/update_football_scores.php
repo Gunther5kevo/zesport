@@ -1,5 +1,5 @@
 <?php
-include('./admin_functions.php');
+
 include('includes/header.php')
 ?>
 
@@ -7,6 +7,7 @@ include('includes/header.php')
 <div class="row">
     <div class="col-md-12">
         <div class="card">
+        <?= alertMessage();?>
             <h2>Update Football Scores</h2>
             <form method="post" action="admin_functions.php">
                 <div class="mb-3">

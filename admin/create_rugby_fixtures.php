@@ -1,7 +1,7 @@
 <?php
 
 
-include('./admin_functions.php');
+
 include('includes/header.php')
 ?>
 <?php
@@ -25,6 +25,7 @@ try {
 <div class="row">
         <div class="col-md-12">
             <div class="card">
+            <?= alertMessage();?>
                 <h2>Create New Rugby Fixture</h2>
                 <form method="post" action="admin_functions.php">
                     <div class="row">

@@ -78,25 +78,26 @@ include('../datalayer/server.php');
             </nav>
         </div>
     </section>
-
     <?php
-    include('../datalayer/video-section.php');
-    $categories = ['football', 'basketball', 'rugby'];
-    foreach ($categories as $category) {
-        $videosByCategory = getVideosByCategory($pdo, $category, 4);
-        if (!empty($videosByCategory)) {
+include('../datalayer/video-section.php');
+$categories = ['football', 'basketball', 'rugby'];
+foreach ($categories as $category) {
+    $videosByCategory = getVideosByCategory($pdo, $category, 4);
+    if (!empty($videosByCategory)) {
         echo '<section class="video-section">';
         echo '<div class="container">';
-        echo '<h2 class="section-heading">' . ucfirst($category) . ' Highlights</h2>'; // Apply section-heading class here
+        echo '<h2 class="section-heading">' . ucfirst($category) . ' Highlights</h2>';
         echo '<div class="row">';
         foreach ($videosByCategory as $video) {
-            echo '<div class="col-md-4 mb-4">';
-            echo '<div class="video-item">';
-            echo '<h3>' . htmlspecialchars($video['title']) . '</h3>';
+            echo '<div class="col-md-3 mb-4">'; // Adjust the column size according to your layout
+            echo '<div class="card">';
+            echo '<div class="card-header">' . htmlspecialchars($video['title']) . '</div>';
+            echo '<div class="card-body">';
             echo '<div class="video-thumbnail">';
             echo '<a href="news.php?video_url=' . urlencode($video['url']) . '&video_title=' . urlencode($video['title']) . '&video_description=' . urlencode($video['description']) . '">';
-            echo '<img src="' . htmlspecialchars($video['thumbnail']) . '" alt="' . htmlspecialchars($video['title']) . '">';
+            echo '<img class="card-img-top" src="' . htmlspecialchars($video['thumbnail']) . '" alt="' . htmlspecialchars($video['title']) . '">';
             echo '</a>';
+            echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
@@ -107,6 +108,7 @@ include('../datalayer/server.php');
     }
 }
 ?>
+
 
         </div>
     </section>

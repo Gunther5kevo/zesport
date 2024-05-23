@@ -1,10 +1,11 @@
 
 <?php
-include('./admin_functions.php');
+
 include('includes/header.php')
 ?>
  <div class="container mt-5">
         <h2 class="text-center mb-4">Upload Image</h2>
+        <?= alertMessage();?>
         <form action="admin_functions.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">Title</label>
