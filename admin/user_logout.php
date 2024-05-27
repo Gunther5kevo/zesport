@@ -1,5 +1,3 @@
-<!-- admin_logout.php -->
-
 <?php
 session_start();
 session_unset();

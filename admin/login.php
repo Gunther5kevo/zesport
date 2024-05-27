@@ -1,5 +1,23 @@
-<?php include('includes/header.php');?>
+<?php 
+    include('functions.php');
+    $pageTitle = 'Login';
 
+    if(isset($_SESSION['auth'])){
+        redirect('../presentationlayer/index.php', 'You are already logged in');
+    }
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>Zesport Login</title>
+</head>
+<body>
 <div class="py-4 bg-secondary text-center">
     <h4 class="text-white">Login </h4>
 </div>
@@ -26,7 +44,7 @@
                             <input type="password" name="password" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <button type="submit" class="btn bt-primary w-100">Login</button>
+                            <button type="submit" class="btn bt-primary w-100" name="login" >Login</button>
                         </div>
                     </form>
                 </div>
@@ -37,6 +55,9 @@
 
 </div>
 
+
+</body>
+</html>
 
 
 <?php include('includes/footer.php'); ?>

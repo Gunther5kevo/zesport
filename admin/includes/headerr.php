@@ -1,11 +1,13 @@
-
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zesport</title>
+    <title>Your Website Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .custom-navbar {
@@ -22,7 +24,6 @@
             color: whitesmoke !important; 
             text-transform: uppercase; 
             margin-right: 15px; 
-
         }
         .custom-navbar .navbar-brand {
            margin-left: 70px;
@@ -68,7 +69,7 @@
         </div>
     </div>
 </nav>
-<!-- Include the necessary Bootstrap and FontAwesome scripts for the sidebar toggler to function properly
-<<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5. -->
+
+
+</body>
+</html>

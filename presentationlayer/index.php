@@ -1,6 +1,6 @@
 <?php
 include ('../datalayer/server.php');
-include('../admin/includes/navbar.php')
+include('../admin/includes/headerr.php')
 ?>
 
 <!DOCTYPE html>
@@ -70,56 +70,30 @@ include('../admin/includes/navbar.php')
 
     <!-- features -->
     <section class="feature-section">
-    <style>
-    .container{
-        margin-bottom: 30px;
-    }
-    .card {
-        height: 500px;
-        border-radius: 5px; 
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-        transition: box-shadow 0.3s ease; 
-        margin-bottom: 30px;
-    }
-
-    .card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
-        
-    }
-    .btn-primary{
-        bottom: 10px;
-        transform: translateX(100%);
-        margin-top: 12px;;
-        background-color: #1C1D3C;
-
-    }
-       
-    </style>
-
     <div class="container">
-    <?php
-    include('../datalayer/features.php');
-    $features = fetchFeatures($pdo);
+        <?php
+        include('../datalayer/features.php');
+        $features = fetchFeatures($pdo);
 
-    if (!empty($features)) {
-        echo '<div class="row">';
-        foreach ($features as $feature) {
-            echo '<div class="col-md-4">';
-            echo '<div class="card feature-item">';
-            echo '<img src="' . $feature['image_url'] . '" class="card-img-top" alt="' . $feature['title'] . '">';
-            echo '<div class="card-body">';
-            echo '<h3 class="card-title">' . htmlspecialchars($feature['title']) . '</h3>';
-            echo '<p class="card-text">' . htmlspecialchars($feature['description']) . '</p>';
-            echo '<a href="' . $feature['link_url'] . '" class="read-more">Read More</a>';
+        if (!empty($features)) {
+            echo '<div class="row">';
+            foreach ($features as $feature) {
+                echo '<div class="col-md-4">';
+                echo '<div class="card feature-item">';
+                echo '<img src="' . htmlspecialchars($feature['image_url']) . '" class="card-img-top" alt="' . htmlspecialchars($feature['title']) . '">';
+                echo '<div class="card-body">';
+                echo '<h3 class="card-title">' . htmlspecialchars($feature['title']) . '</h3>';
+                echo '<p class="card-text">' . htmlspecialchars($feature['description']) . '</p>';
+                echo '<a href="' . htmlspecialchars($feature['link_url']) . '" class="read-more">Read More</a>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+            }
             echo '</div>';
-            echo '</div>';
-            echo '</div>';
+        } else {
+            echo "<p>No features found</p>";
         }
-        echo '</div>';
-    } else {
-        echo "<p>No features found</p>";
-    }
-    ?>
+        ?>
     </div>
     </section>
 
@@ -134,7 +108,6 @@ include('../admin/includes/navbar.php')
     </div>
 
     </section>
-      
     <section class="video-section">
   <?php
   include('../datalayer/video-section.php');
@@ -167,6 +140,7 @@ include('../admin/includes/navbar.php')
                   <div class="video-thumbnail">
                     <a href="news.php?video_url=<?php echo urlencode($video['url']); ?>&video_title=<?php echo urlencode($video['title']); ?>&video_description=<?php echo urlencode($video['description']); ?>">
                       <img src="<?php echo htmlspecialchars($video['thumbnail']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>">
+                      <i class="play-icon fas fa-play-circle"></i> 
                     </a>
                   </div>
                 </div>
@@ -174,10 +148,11 @@ include('../admin/includes/navbar.php')
             </div>
           </div>
         </div>
-         <?php endforeach; ?>
-        </div>
-     </div>
-    </section>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
 
 
 
@@ -243,6 +218,7 @@ include('../admin/includes/navbar.php')
     <?php include('./footer.php'); ?>
 </footer>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>

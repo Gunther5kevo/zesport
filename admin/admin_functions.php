@@ -91,13 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
         // Set success message
         $_SESSION['status'] = "Fixture created successfully!";
         // Redirect to admin dashboard
-        header("Location: admin_dashboard.php");
+        header("Location: create_football_fixtures.php");
         exit();
     } catch (PDOException $e) {
         // Set error message
         $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
         // Redirect to admin dashboard
-        header("Location: admin_dashboard.php");
+        header("Location: create_football_fixtures.php");
         exit();
     }
 }
@@ -131,13 +131,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_basketball_fix
         // Set success message
         $_SESSION['status'] = "Basketball fixture created successfully!";
         // Redirect to admin dashboard after successful insertion
-        header('Location: admin_dashboard.php');
+        header('Location: create_basketball_fixtures.php');
         exit();
     } catch (PDOException $e) {
         // Set error message
         $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
         // Redirect to admin dashboard
-        header('Location: admin_dashboard.php');
+        header('Location: create_basketball_fixtures.php');
         exit();
     }
 }
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rugby_fixture'
             // Set success message
             $_SESSION['status'] = "Rugby fixture created successfully!";
             // Redirect to admin dashboard after successful insertion
-            header('Location: admin_dashboard.php');
+            header('Location: create_rugby_fixtures.php');
             exit();
         } catch (PDOException $e) {
             // Set error message
@@ -214,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_football_scores
             $_SESSION['status'] = 'All fields are required.';
         }
         // Redirect back to the same page after processing
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: update_football_scores.php' );
         exit();
     }
     
@@ -250,7 +250,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_basketball_scor
             $_SESSION['status'] = 'All fields are required.';
         }
         // Redirect back to the same page after processing
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: update_basketball_scores.php');
         exit();
 }
     
@@ -295,7 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $imageTmpPath = $_FILES['image']['tmp_name'];
         $imageName = basename($_FILES['image']['name']);
-        $imagePath = 'uploads/' . $imageName;
+        $imagePath = '../presentationlayer/assets/img/avatar/' . $imageName;
         move_uploaded_file($imageTmpPath, $imagePath);
         $image = $imagePath;
     }
@@ -503,7 +503,43 @@ if (isset($_POST['saveUser'])) {
     }
 }
 
+
+if (isset($_POST['updateUser'])) {
+    $id = validate($_POST['user_id']);
+    $name = validate($_POST['name']);
+    $phone = validate($_POST['phone']);
+    $email = validate($_POST['email']);
+    $password = validate($_POST['password']);
+    $role = validate($_POST['role']);
+    $is_ban = isset($_POST['is_ban']) ? 1 : 0;
+
+    try {
+        $query = "UPDATE users SET name = :name, phone = :phone, email = :email, password = :password, role = :role, is_ban = :is_ban WHERE id = :id";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([
+            'name' => $name,
+            'phone' => $phone,
+            'email' => $email,
+            'password' => $password,
+            'role' => $role,
+            'is_ban' => $is_ban,
+            'id' => $id
+        ]);
+
+        $_SESSION['message'] = 'User updated successfully';
+        $_SESSION['alert_type'] = 'success';
+    } catch (PDOException $e) {
+        $_SESSION['message'] = 'Failed to update user: ' . $e->getMessage();
+        $_SESSION['alert_type'] = 'danger';
+    }
+
+    header('Location: users-edit.php');
+    exit();
+}
+
 ?>
+
+
 
 
 

@@ -21,12 +21,14 @@ function alertMessage()
         <h6>'.$_SESSION['status'].'</h6>
         </div>';
         unset($_SESSION['status']);
-    } else {
-        
-        echo '<div class="alert alert-info">
-        <h6>No status message found.</h6>
-        </div>';
-    }
+    } 
+
+}
+
+function logoutSession(){
+    unset($_SESSION ['auth']);
+    unset($_SESSION ['loggedInUserRole']);
+    unset($_SESSION ['loggedInUser']);
 }
 
 
@@ -38,18 +40,58 @@ function checkParamId($paramType){
     }
 }
 
-function getById($pdo, $tableName, $id){
+
+function deleteQuery($pdo, $tableName, $id) {
+
     
     $table = validate($tableName);
     $id = validate($id);
 
-    $query = "SELECT * FROM $table WHERE id = :id LIMIT 1";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute(['id' => $id]);
-
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $result; // Return the result or false if no result found
+    try {
+        $query = "DELETE FROM $table WHERE id = :id LIMIT 1";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return true;
+    } catch (PDOException $e) {      
+        return false;
+    }
 }
+
+
+function getById($pdo, $tableName, $id) {
+    
+    $table = validate($tableName);
+    $id = validate($id);
+
+    try {
+        $query = "SELECT * FROM $table WHERE id = :id LIMIT 1";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $response = [
+                'status' => 200,
+                'data' => $result
+            ];
+        } else {
+            $response = [
+                'status' => 404,
+                'message' => 'No Data Record'
+            ];
+        }
+        return $response;
+
+    } catch (PDOException $e) {
+        
+        $response = [
+            'status' => 500,
+            'message' => 'Something Went Wrong: ' . $e->getMessage()
+        ];
+        return $response;
+    }
+}
+
 
 
 

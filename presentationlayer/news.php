@@ -1,6 +1,6 @@
 <?php
 include('../datalayer/server.php');
-include('../admin/includes/navbar.php')
+include('../admin/includes/headerr.php')
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,9 +79,9 @@ include('../admin/includes/navbar.php')
           <div class="row">
             <?php foreach ($videos as $video) : ?>
               <div class="col-md-3 mb-4">
-                <div class="card">
+                <!-- <div class="card">
                   <div class="card-header"><?php echo htmlspecialchars($video['title']); ?></div>
-                  <div class="card-body">
+                  <div class="card-body"> -->
                     <div class="video-thumbnail">
                       <!-- Video Player -->
                       <video class="card-img-top" width="100%" controls>
@@ -90,9 +90,9 @@ include('../admin/includes/navbar.php')
                       </video>
                     </div>
                     <p class="card-text"><?php echo htmlspecialchars($video['description']); ?></p>
-                  </div>
+                  <!-- </div>
                 </div>
-              </div>
+              </div> -->
             <?php endforeach; ?>
           </div>
         <?php endforeach; ?>
