@@ -1,13 +1,6 @@
 <?php
+include('includes/header.php');
 
-
-
-include('includes/header.php')
-
-
-?>
-
-<?php
 // Assume you have already established a database connection
 
 // Fetch teams from the database
@@ -19,18 +12,27 @@ $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
 $sql_competitions = "SELECT id, competition_name FROM competitions ORDER BY competition_name";
 $stmt_competitions = $pdo->query($sql_competitions);
 $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch tournaments from the database
+$sql_tournaments = "SELECT id, tournament_name FROM tournaments ORDER BY tournament_name";
+$stmt_tournaments = $pdo->query($sql_tournaments);
+$tournaments = $stmt_tournaments->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-        <?= alertMessage();?>
+            <?= alertMessage();?>
             <h4>Create New Football Fixture</h4>
             <form method="post" action="admin_functions.php">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="match_date">Match Date:</label>
                         <input type="date" id="match_date" name="match_date" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="match_time">Match Time:</label>
+                        <input type="time" id="match_time" name="match_time" class="form-control">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="home_team">Home Team:</label>
@@ -53,9 +55,18 @@ $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col-md-6 mb-3">
                         <label for="competition">Competition:</label>
                         <select id="competition" name="competition" class="form-control">
-                            <option value="" disabled selected>Select a competition</option>
+                            <option value="" selected>No competition</option>
                             <?php foreach ($competitions as $competition): ?>
                                 <option value="<?= htmlspecialchars($competition['id']) ?>"><?= htmlspecialchars($competition['competition_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="tournament">Tournament:</label>
+                        <select id="tournament" name="tournament" class="form-control">
+                            <option value="" selected>No tournament</option>
+                            <?php foreach ($tournaments as $tournament): ?>
+                                <option value="<?= htmlspecialchars($tournament['id']) ?>"><?= htmlspecialchars($tournament['tournament_name']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -68,16 +79,10 @@ $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
                         <input type="text" id="referee" name="referee" class="form-control">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Create Fixture</button>
+                <button type="submit" class="btn btn-primary" name="create_fixture">Create Fixture</button>
             </form>
         </div>
     </div>
 </div>
 
- 
-
- 
-
-  
-    
 <?php include('includes/footer.php'); ?>

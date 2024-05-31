@@ -15,58 +15,54 @@ include('../admin/includes/headerr.php')
 </head>
 <body>
 <main>
-    <section class="img-section">
-        <div class="container-fluid">
-            <div id="sportsCarousel" class="carousel slide" data-ride="carousel">
+<section class="img-section">
+    <div class="container-fluid">
+        <div id="sportsCarousel" class="carousel slide" data-ride="carousel">
 
-                <!-- Indicators -->
-                <ol class="carousel-indicators">
-                    <li data-target="#sportsCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#sportsCarousel" data-slide-to="1"></li>
-                    <li data-target="#sportsCarousel" data-slide-to="2"></li>
-                </ol>
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#sportsCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#sportsCarousel" data-slide-to="1"></li>
+                <li data-target="#sportsCarousel" data-slide-to="2"></li>
+            </ol>
 
-                <div class="carousel-inner">
-
-                    <div class="carousel-item active">
-                        <img src="assets/img/foot.jpg" class="d-block w-100" alt="Football Image">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Football News</h5>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco labor.</p>
-                        </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="assets/img/foot1.jpg" class="d-block w-100" alt="Football Image">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Zetech Sparks</h5>
+                        <p>A last one for the 2023/2024 season 🤗.</p>
                     </div>
-
-                    <div class="carousel-item">
-                        <img src="assets/img/basketball.jpg" class="d-block w-100" alt="Basketball Image">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Basketball News</h5>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco labor.</p>
-                        </div>
-                    </div>
-
-                    <!-- Hockey Slide -->
-                    <div class="carousel-item">
-                        <img src="assets/img/rugby.jpg" class="d-block w-100" alt="Hockey Image">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Rugby News</h5>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco labor.</p>
-                        </div>
-                    </div>
-
                 </div>
-
-                <a class="carousel-control-prev" href="#sportsCarousel" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#sportsCarousel" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-
+                <div class="carousel-item">
+                    <img src="assets/img/basketball.jpg" class="d-block w-100" alt="Basketball Image">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Champions!! 👏🏀</h5>
+                        <p>Zetech Sparks are the new basketball champions of the Eliud Owalo Foundation Elite Tournament after defeating arch-rivals KPA 59-50 in the finals on Sunday at the Ulinzi Complex, Nairobi.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="assets/img/img3.jpg" class="d-block w-100" alt="Rugby Image">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Rugby News</h5>
+                        <p>Hats off to these unwavering disciples of the game, who have etched their characters on the pitch every single day, pouring their hearts out for what they believe in! 🏉🌟</p>
+                    </div>
+                </div>
             </div>
+
+            <a class="carousel-control-prev" href="#sportsCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#sportsCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
-    </section> 
+    </div>
+</section>
+
+
 
     <!-- features -->
     <section class="feature-section">

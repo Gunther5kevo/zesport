@@ -31,10 +31,10 @@ session_start();
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-        <img src="../presentationlayer/assets/img/zetechlogo.png" alt="Zetech University" style="max-width: 20%; height: auto;" class="d-inline-block align-top">
+            <img src="../presentationlayer/assets/img/zetechlogo.png" alt="Zetech University" style="max-width: 20%; height: auto;" class="d-inline-block align-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -70,6 +70,6 @@ session_start();
     </div>
 </nav>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

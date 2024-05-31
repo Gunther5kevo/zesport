@@ -14,102 +14,151 @@ include('../datalayer/server.php');
 <body>
 
 <main>
-<section class="nav-section">
-        <nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">ZEsport</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="football.php">Football</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="basketball.php">Basketball</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="rugby.php">Rugby</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-</section>
-    <?php
-        include('../datalayer/blog.php');
-        
-        $perPage = 6;
-        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-        $category = isset($_GET['category']) ? $_GET['category'] : null;
-
-        $posts = fetchBlogPosts($pdo, $category, $perPage, $page);
-        $totalPosts = countTotalPosts($pdo, $category);
-        $totalPages = ceil($totalPosts / $perPage);
-    ?>  
-    <section class="news-section">
-        <div class="container">
-            <div class="row">
-                <?php foreach ($posts as $post) : ?>
-                    <div class="col-md-6">
-                        <div class="news-item">
-                            <img src="<?php echo htmlspecialchars($post['image']); ?>" alt="News Image">
-                            <h2><?php echo htmlspecialchars($post['title']); ?></h2>
+<?php
+include('../datalayer/blog.php');
+$perPage = 6;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$category = isset($_GET['category']) ? $_GET['category'] : null;
+$posts = fetchBlogPosts($pdo, $category, $perPage, $page);
+$totalPosts = countTotalPosts($pdo, $category);
+$totalPages = ceil($totalPosts / $perPage);
+?>
+<section class="news-section">
+    <div class="container">
+        <div class="row">
+            <?php foreach ($posts as $post) : ?>
+                <div class="col-md-6 d-flex">
+                    <div class="news-item card flex-fill">
+                        <?php if (!empty($post['image'])) : ?>
+                            <img src="../presentationlayer/assets/img/avatar/<?php echo htmlspecialchars($post['image']); ?>" alt="News Image" class="card-img-top">
+                        <?php endif; ?>
+                        <div class="card-body d-flex flex-column">
+                            <h2 class="card-title"><?php echo htmlspecialchars($post['title']); ?></h2>
                             <p class="meta">
                                 <span class="author">By <?php echo htmlspecialchars($post['author']); ?></span>
                                 <span class="date"><?php echo htmlspecialchars($post['date']); ?></span>
                             </p>
-                            <p><?php echo htmlspecialchars($post['content']); ?></p>
+                            <p class="card-text"><?php echo htmlspecialchars($post['content']); ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                    <li class="page-item <?php echo ($i === $page) ? 'active' : ''; ?>">
+                        <a class="page-link" href="?category=<?php echo urlencode($category); ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+    </div>
+    </section>
+
+
+    <section class="video-section">
+    <?php
+    include('../datalayer/video-section.php');
+
+    // Define the categories
+    $categories = ['football', 'basketball', 'rugby'];
+
+    // Initialize an empty array to store videos by category
+    $videosByCategory = [];
+
+    // Fetch videos for each category
+    foreach ($categories as $category) {
+        $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
+    }
+    ?>
+
+    <div class="container">
+        <?php foreach ($videosByCategory as $category => $videos) : ?>
+            <h2 class="section-heading"><?php echo ucfirst($category) ?> Highlights</h2>
+            <div class="row">
+                <?php foreach ($videos as $video) : ?>
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="video-card">
+                            <div class="video-header"><?php echo htmlspecialchars($video['title']); ?></div>
+                            <div class="video-thumbnail">
+                                <!-- Video Player -->
+                                <video class="video-player" controls>
+                                    <source src="<?php echo htmlspecialchars($video['url']); ?>" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
-                 
-                 <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                        <li class="page-item <?php echo ($i === $page) ? 'active' : ''; ?>">
-                            <a class="page-link" href="?category=<?php echo urlencode($category); ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
-                </ul>
-            </nav>
+        <?php endforeach; ?>
         </div>
     </section>
 
-    <?php
-    include('../datalayer/video-section.php');
-    $categories = ['football', 'basketball', 'rugby'];
-    foreach ($categories as $category) {
-        $videosByCategory = getVideosByCategory($pdo, $category, 4);
-        if (!empty($videosByCategory)) {
-        echo '<section class="video-section">';
-        echo '<div class="container">';
-        echo '<h2 class="section-heading">' . ucfirst($category) . ' Highlights</h2>'; // Apply section-heading class here
-        echo '<div class="row">';
-        foreach ($videosByCategory as $video) {
-            echo '<div class="col-md-4 mb-4">';
-            echo '<div class="video-item">';
-            echo '<h3>' . htmlspecialchars($video['title']) . '</h3>';
-            echo '<div class="video-thumbnail">';
-            echo '<a href="news.php?video_url=' . urlencode($video['url']) . '&video_title=' . urlencode($video['title']) . '&video_description=' . urlencode($video['description']) . '">';
-            echo '<img src="' . htmlspecialchars($video['thumbnail']) . '" alt="' . htmlspecialchars($video['title']) . '">';
-            echo '</a>';
-            echo '</div>';
-            echo '</div>';
-            echo '</div>';
-        }
-        echo '</div>';
-        echo '</div>';
-        echo '</section>';
+<style>
+    .video-section {
+        padding: 20px 0;
     }
-}
-?>
 
-        </div>
-    </section>
+    .section-heading {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .video-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .video-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .video-header {
+        padding: 10px;
+        background-color: #3a87ad;
+        color: #fff;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .video-thumbnail {
+        position: relative;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        background-color: #000;
+    }
+
+    .video-thumbnail video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    @media (max-width: 768px) {
+        .video-header {
+            font-size: 14px;
+            padding: 8px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .video-header {
+            font-size: 12px;
+            padding: 6px;
+        }
+    }
+</style>
 
 
 </main>

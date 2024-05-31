@@ -36,6 +36,7 @@
     <div class="container content">
         <div class="row">
             <div class="col-md-3 mb-4">
+             <?= alertMessage();?>
                 <div class="card card-body p-3">
                     <h5 class="font-weight-bolder mb-0"> 
                         Welcome!

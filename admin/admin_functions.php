@@ -64,26 +64,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
 }
 
+// Handle Tournaments
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_tournament'])) {
+    $tournament_name = $_POST['tournament_name'];
+    $competition_id = $_POST['competition'];
+
+    try {
+        $sql = "INSERT INTO tournaments (tournament_name, competition_id) VALUES (:tournament_name, :competition_id)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'tournament_name' => $tournament_name,
+            'competition_id' => $competition_id ? $competition_id : null
+        ]);
+
+        // Set success message
+        $_SESSION['status'] = "Tournament created successfully!";
+        // Redirect to admin dashboard or the page where the form is located
+        header("Location: create_tournament.php");
+        exit();
+    } catch (PDOException $e) {
+        // Set error message
+        $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
+        // Redirect to admin dashboard or the page where the form is located
+        header("Location: create_tournament.php");
+        exit();
+    }
+}
 
 // Football fixture
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
     $match_date = $_POST['match_date'];
+    $match_time = $_POST['match_time']; // Add this line to get match time
     $home_team = $_POST['home_team'];
     $away_team = $_POST['away_team'];
     $venue = $_POST['venue'];
     $referee = $_POST['referee'];
     $competition_id = $_POST['competition'];
+    $tournament_id = $_POST['tournament'];
 
     try {
-        $sql = "INSERT INTO football_matches (match_date, home_team_id, away_team_id, competition_id, venue, referee)
-                VALUES (:match_date, :home_team, :away_team, :competition_id, :venue, :referee)";
+        $sql = "INSERT INTO football_matches (match_date, match_time, home_team_id, away_team_id, competition_id, tournament_id, venue, referee)
+                VALUES (:match_date, :match_time, :home_team, :away_team, :competition_id, :tournament_id, :venue, :referee)";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             'match_date' => $match_date,
+            'match_time' => $match_time,
             'home_team' => $home_team,
             'away_team' => $away_team,
             'competition_id' => $competition_id,
+            'tournament_id' => $tournament_id,
             'venue' => $venue,
             'referee' => $referee
         ]);
@@ -101,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
         exit();
     }
 }
-
 
 
 //Basketball fixture 
@@ -283,40 +313,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_rugby_scores'])
     } 
 
     //Blog posts 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
-    $title = $_POST['title'];
-    $author = $_POST['author'];
-    $date = $_POST['date'];
-    $content = $_POST['content'];
-    $link = $_POST['link'];
-    $image = '';
-
-    // Handle file upload
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $imageTmpPath = $_FILES['image']['tmp_name'];
-        $imageName = basename($_FILES['image']['name']);
-        $imagePath = '../presentationlayer/assets/img/avatar/' . $imageName;
-        move_uploaded_file($imageTmpPath, $imagePath);
-        $image = $imagePath;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
+        $title = $_POST['title'];
+        $author = $_POST['author'];
+        $date = $_POST['date'];
+        $content = $_POST['content'];
+        $image = '';
+    
+        // Handle file upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $imageTmpPath = $_FILES['image']['tmp_name'];
+            $imageName = basename($_FILES['image']['name']);
+            $imagePath = '../presentationlayer/assets/img/avatar/' . $imageName;
+            
+            if (move_uploaded_file($imageTmpPath, $imagePath)) {
+                $image = $imageName;
+            } else {
+                echo "<div class='alert alert-danger'>Error uploading image.</div>";
+                exit;
+            }
+        }
+    
+        $sql = "INSERT INTO news_posts (title, author, date, content, image) VALUES (:title, :author, :date, :content, :image)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':author', $author);
+        $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':content', $content);
+        $stmt->bindParam(':image', $image);
+        
+    
+        try {
+            $stmt->execute();
+            echo "<div class='alert alert-success'>Post created successfully.</div>";
+        } catch (PDOException $e) {
+            echo "<div class='alert alert-danger'>Error creating post: " . $e->getMessage() . "</div>";
+        }
     }
-
-    $sql = "INSERT INTO news_posts (title, author, date, content, image, link) VALUES (:title, :author, :date, :content, :image, :link)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':title', $title);
-    $stmt->bindParam(':author', $author);
-    $stmt->bindParam(':date', $date);
-    $stmt->bindParam(':content', $content);
-    $stmt->bindParam(':image', $image);
-    $stmt->bindParam(':link', $link);
-
-    try {
-        $stmt->execute();
-        echo "Post created successfully.";
-    } catch (PDOException $e) {
-        echo "Error creating post: " . $e->getMessage();
-    }
-}
-
 
 //Creating Teams 
 
