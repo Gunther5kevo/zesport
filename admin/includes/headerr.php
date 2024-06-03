@@ -44,8 +44,14 @@ session_start();
                 <li class="nav-item">
                     <a class="nav-link" href="../presentationlayer/index.php">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../presentationlayer/football.php">Football</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="footballDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Football
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="footballDropdown">
+                        <li><a class="dropdown-item" href="../presentationlayer/football_men.php">Men</a></li>
+                        <li><a class="dropdown-item" href="../presentationlayer/football_women.php">Women</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../presentationlayer/basketball.php">Basketball</a>
@@ -55,7 +61,7 @@ session_start();
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../presentationlayer/news.php">News</a>
-                </li>              
+                </li>
                 <?php if (isset($_SESSION['auth'])): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="../admin/logout.php">Logout</a>

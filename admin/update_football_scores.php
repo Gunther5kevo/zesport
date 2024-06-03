@@ -16,7 +16,8 @@ include('includes/header.php')
                         <option value="">Select Fixture</option>
                         <?php
                         // Fetch fixtures from the database
-                        $sql = "SELECT id, match_date, home_team_id, away_team_id FROM football_matches";
+                         $sql = "SELECT id, match_date, home_team_id, away_team_id FROM football_matches 
+                         WHERE gender = 'Male'"; // Add this condition to fetch only male fixtures
                         $stmt = $pdo->query($sql);
                         $fixtures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

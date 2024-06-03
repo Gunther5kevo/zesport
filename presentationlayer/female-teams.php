@@ -1,11 +1,11 @@
-<!-- <?php
-// session_start();
-// include('db_connection.php'); // Your PDO connection setup
+<?php
+session_start();
+include('../datalayer/server.php'); // Your PDO connection setup
 
-// // Fetch male and female teams
-// $maleTeams = fetchTeamsByGender($pdo, 'male');
-// $femaleTeams = fetchTeamsByGender($pdo, 'female');
-?> -->
+// Fetch male and female teams
+$maleTeams = fetchTeamsByGender($pdo, 'male');
+$femaleTeams = fetchTeamsByGender($pdo, 'female');
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
