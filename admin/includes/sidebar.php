@@ -16,7 +16,7 @@
           </a>
           </li>
         <li class="nav-item">
-          <a class="nav-link text-white " href="create_tournaments.php">
+          <a class="nav-link text-white " href="create_tournament.php">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fa fa-trophy text-white text-lg"></i>
             </div>

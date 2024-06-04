@@ -360,19 +360,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_rugby_scores'])
 
 //Creating Teams 
 
-// Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_football_team"])) {
     // Assuming $pdo is your PDO database connection object
     $team_name = isset($_POST['team_name']) ? $_POST['team_name'] : '';
+    $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
 
-    if (!empty($team_name)) {
+    if (!empty($team_name) && !empty($gender)) {
         try {
-            // Prepare the SQL statement with a named placeholder
-            $sql = "INSERT INTO teams (team_name) VALUES (:team_name)";
+            // Prepare the SQL statement with named placeholders
+            $sql = "INSERT INTO teams (team_name, gender) VALUES (:team_name, :gender)";
             $stmt = $pdo->prepare($sql);
 
-            // Bind the parameter to the named placeholder
+            // Bind the parameters to the named placeholders
             $stmt->bindParam(':team_name', $team_name);
+            $stmt->bindParam(':gender', $gender);
 
             // Execute the prepared statement
             if ($stmt->execute()) {
@@ -385,9 +386,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_football_team"]
             redirect('create_teams.php', "Database error: " . $e->getMessage());
         }
     } else {
-        redirect('create_teams.php', "Team name is required.");
+        redirect('create_teams.php', "Team name and gender are required.");
     }
 }
+
 
 //Creating Rugby Teams
 
@@ -577,7 +579,38 @@ if (isset($_POST['updateUser'])) {
     exit();
 }
 
+//creating competitions 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_competition"])) {
+    
+
+    // Get form data
+    $competition_name = $_POST['competition_name'];
+
+    // Insert data into the database
+    $sql = "INSERT INTO competitions (competition_name) VALUES (:competition_name)";
+    $stmt = $pdo->prepare($sql);
+
+    // Bind parameters
+    $stmt->bindParam(':competition_name', $competition_name);
+
+    // Execute statement
+    if ($stmt->execute()) {
+        // Set success message in session
+        $_SESSION['status'] = 'Competition created successfully!';
+    } else {
+        // Set error message in session
+        $_SESSION['status'] = 'Error: Unable to create competition.';
+    }
+
+    // Redirect back to create_competition.php
+    header('Location: create_competition.php');
+    exit();
+}
+
+
 ?>
+
+
 
 
 
