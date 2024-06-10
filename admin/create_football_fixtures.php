@@ -1,32 +1,31 @@
-<?php include('includes/header.php');
+<?php
+include('includes/header.php');
 
-// Assume you have already established a database connection
 
 // Fetch competitions from the database
 $sql_competitions = "SELECT id, competition_name FROM competitions ORDER BY competition_name";
 $stmt_competitions = $pdo->query($sql_competitions);
 $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch teams based on the selected gender
-$gender = isset($_GET['gender']) ? $_GET['gender'] : 'Male';
+// Fetch teams based on the default gender selection for initial page load
+$gender = 'Male';
 $sql_teams = "SELECT id, team_name FROM teams WHERE gender = :gender ORDER BY team_name";
-$stmt_teams = $pdo->prepare($sql_teams);
-$stmt_teams->execute(['gender' => $gender]);
+$stmt_teams = $pdo->prepare($sql_teams); // Prepare the SQL statement
+$stmt_teams->execute(['gender' => $gender]); // Execute with parameter
 $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <?= alertMessage();?>
+            <?= alertMessage(); ?>
             <h4>Create New Football Fixture</h4>
             <form method="post" action="admin_functions.php">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="gender">Gender:</label>
-                        <select id="gender" name="gender" class="form-control" onchange="getTeams()">
-                            <option value="Male">Male</option>
+                        <select id="gender" name="gender" class="form-control">
+                            <option value="Male" <?= $gender === 'Male' ? 'selected' : '' ?>>Male</option>
                             <option value="Female">Female</option>
                         </select>
                     </div>
@@ -49,7 +48,7 @@ $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="home_team">Home Team:</label>
-                        <select id="home_team" name="home_team" class="form-control" >
+                        <select id="home_team" name="home_team" class="form-control">
                             <option value="" disabled selected>Select a team</option>
                             <?php foreach ($teams as $team): ?>
                                 <option value="<?= htmlspecialchars($team['id']) ?>"><?= htmlspecialchars($team['team_name']) ?></option>
@@ -58,14 +57,13 @@ $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="away_team">Away Team:</label>
-                        <select id="away_team" name="away_team" class="form-control" >
+                        <select id="away_team" name="away_team" class="form-control">
                             <option value="" disabled selected>Select a team</option>
                             <?php foreach ($teams as $team): ?>
                                 <option value="<?= htmlspecialchars($team['id']) ?>"><?= htmlspecialchars($team['team_name']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    
                     <div class="col-md-6 mb-3">
                         <label for="venue">Venue:</label>
                         <input type="text" id="venue" name="venue" class="form-control">
@@ -83,43 +81,34 @@ $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
 
 <?php include('includes/footer.php'); ?>
 
+<!-- Include jQuery for simplicity -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-function getTeams() {
-    var gender = document.getElementById('gender').value;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '?gender=' + gender, true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var teams = JSON.parse(xhr.responseText);
-            var homeTeamSelect = document.getElementById('home_team');
-            var awayTeamSelect = document.getElementById('away_team');
-            homeTeamSelect.innerHTML = '<option value="" disabled selected>Select a team</option>';
-            awayTeamSelect.innerHTML = '<option value="" disabled selected>Select a team</option>';
-            teams.forEach(function(team) {
-                var
-                option = document.createElement('option');
-                option.value = team.id;
-                option.textContent = team.team_name;
-                homeTeamSelect.appendChild(option);
-                awayTeamSelect.appendChild(option.cloneNode(true));
+$(document).ready(function() {
+    function getTeams() {
+        var gender = $('#gender').val();
+        $.ajax({
+            url: '../datalayer/fetch_teams.php',
+            method: 'GET',
+            data: { gender: gender },
+            dataType: 'json',
+            success: function(teams) {
+                var homeTeamSelect = $('#home_team');
+                var awayTeamSelect = $('#away_team');
+                homeTeamSelect.empty().append('<option value="" disabled selected>Select a team</option>');
+                awayTeamSelect.empty().append('<option value="" disabled selected>Select a team</option>');
+                $.each(teams, function(index, team) {
+                    homeTeamSelect.append('<option value="' + team.id + '">' + team.team_name + '</option>');
+                    awayTeamSelect.append('<option value="' + team.id + '">' + team.team_name + '</option>');
                 });
-                }
-                };
-                xhr.send();
-                }
-
-                // Initial call to load teams based on the default gender selection
-                document.addEventListener('DOMContentLoaded', function() {
-                getTeams();
-                });
-    </script>
-
-    <?php
-    if (isset($_GET['gender'])) {
-        header('Content-Type: application/json');
-        echo json_encode($teams);
-        exit;
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error fetching teams: ", textStatus, errorThrown);
+            }
+        });
     }
-    ?>
-    
-<?php include('includes/footer.php');?>
+
+    $('#gender').change(getTeams);
+    getTeams(); // Initial call to load teams based on the default gender selection
+});
+</script>

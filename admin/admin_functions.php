@@ -64,33 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
 }
 
-// Handle Tournaments
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_tournament'])) {
-    $tournament_name = $_POST['tournament_name'];
-    $competition_id = $_POST['competition'];
 
-    try {
-        $sql = "INSERT INTO tournaments (tournament_name, competition_id) VALUES (:tournament_name, :competition_id)";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'tournament_name' => $tournament_name,
-            'competition_id' => $competition_id ? $competition_id : null
-        ]);
-
-        // Set success message
-        $_SESSION['status'] = "Tournament created successfully!";
-        // Redirect to admin dashboard or the page where the form is located
-        header("Location: create_tournament.php");
-        exit();
-    } catch (PDOException $e) {
-        // Set error message
-        $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
-        // Redirect to admin dashboard or the page where the form is located
-        header("Location: create_tournament.php");
-        exit();
-    }
-}
 
 // Football fixture
 
@@ -98,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_tournament']))
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
     $match_date = $_POST['match_date'];
-    $match_time = $_POST['match_time']; // Add this line to get match time
+    $match_time = $_POST['match_time']; 
     $home_team = $_POST['home_team'];
     $away_team = $_POST['away_team'];
     $venue = $_POST['venue'];
     $referee = $_POST['referee'];
     $competition_id = $_POST['competition'];
     
-    $gender = $_POST['gender']; // Add this line to get the selected gender
+    $gender = $_POST['gender']; 
 
     try {
         $sql = "INSERT INTO football_matches (match_date, match_time, home_team_id, away_team_id, competition_id, venue, referee, gender)
@@ -580,35 +554,32 @@ if (isset($_POST['updateUser'])) {
 }
 
 //creating competitions 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_competition"])) {
-    
 
-    // Get form data
-    $competition_name = $_POST['competition_name'];
 
-    // Insert data into the database
-    $sql = "INSERT INTO competitions (competition_name) VALUES (:competition_name)";
-    $stmt = $pdo->prepare($sql);
 
-    // Bind parameters
-    $stmt->bindParam(':competition_name', $competition_name);
+if (isset($_POST['create_competition'])) {
+    $competition_name = validate($_POST['competition']);
 
-    // Execute statement
-    if ($stmt->execute()) {
-        // Set success message in session
-        $_SESSION['status'] = 'Competition created successfully!';
-    } else {
-        // Set error message in session
-        $_SESSION['status'] = 'Error: Unable to create competition.';
+    try {
+        $sql = "INSERT INTO competitions (competition_name) VALUES (:competition_name)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['competition_name' => $competition_name]);
+
+        $_SESSION['message'] = 'Competition created successfully';
+        $_SESSION['alert_type'] = 'success';
+    } catch (PDOException $e) {
+        $_SESSION['message'] = 'Failed to create competition: ' . $e->getMessage();
+        $_SESSION['alert_type'] = 'danger';
     }
 
-    // Redirect back to create_competition.php
-    header('Location: create_competition.php');
+    header('Location: create_tournament.php');
     exit();
 }
 
-
 ?>
+
+
+
 
 
 

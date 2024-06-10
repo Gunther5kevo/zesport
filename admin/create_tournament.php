@@ -14,7 +14,7 @@ include('includes/header.php');
                         <input type="text" id="competition" name="competition" class="form-control" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" name="create_tournament">Create Tournament</button>
+                <button type="submit" class="btn btn-primary" name="create_competition">Create Tournament</button>
             </form>
         </div>
     </div>

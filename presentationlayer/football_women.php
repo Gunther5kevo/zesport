@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Men's Football - ZeSport</title>
+    <title>Football Fixtures - ZeSport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
@@ -19,12 +19,12 @@
             padding-right: 20px;
         }
         .custom-navbar .navbar-nav .nav-link {
-            color: whitesmoke !important; 
-            text-transform: uppercase; 
-            margin-right: 15px; 
+            color: whitesmoke !important;
+            text-transform: uppercase;
+            margin-right: 15px;
         }
         .custom-navbar .navbar-brand {
-           margin-left: 70px;
+            margin-left: 70px;
         }
     </style>
 </head>
@@ -61,25 +61,63 @@
 
     <div class="container">
         <?php
-        // Handle PHP actions based on the 'action' parameter in the URL
         if (isset($_GET['action'])) {
             $action = $_GET['action'];
             if ($action === 'results') {
-                include('football_results_men.php');
+                include('female_results.php');
             } elseif ($action === 'news') {
-                include('football_news_men.php');
+                include('female_news.php');
             } elseif ($action === 'fixtures') {
-                include('female_fixtures.php');
+                ?>
+                <h2>Select Competition:</h2>
+                <form id="fixturesForm">
+                    <div class="mb-3">
+                        <label for="competition" class="form-label">Competition:</label>
+                        <select class="form-select" id="competition" name="competition_id">
+                            <option value="1">FKF Women Premier League</option>
+                            <option value="2">Kenyan Premier League</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                </form>
+                
+                <div id="fixturesContent"></div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                <script>
+                    $(document).ready(function() {
+                        // Submit the form via AJAX when the selection in the dropdown changes
+                        $('#competition').change(function() {
+                            // Get the selected competition ID
+                            var competitionId = $(this).val();
+
+                            // Send an AJAX request to fetch fixtures based on the selected competition
+                            $.ajax({
+                                type: 'GET',
+                                url: 'female_fixtures.php', // Change the URL to the script that fetches fixtures
+                                data: { competition_id: competitionId },
+                                success: function(response) {
+                                    $('#fixturesContent').html(response); // Display the fetched fixtures
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Error:', error); // Log any errors
+                                }
+                            });
+                        });
+                        
+                        // Trigger change event to load the default competition fixtures
+                        $("#competition").val($("#competition option:first").val()).change();
+                    });
+                </script>
+                <?php
             } else {
-                include('./standings/female_standings.php');
+                include('/standings/female_standings.php');
             }
         } else {
-            include('./standings/female_standings.php');
+            include('standings/female_standings.php');
         }
         ?>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.1/js/bootstrap.min.js"></script>
 </body>
