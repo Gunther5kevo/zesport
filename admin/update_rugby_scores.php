@@ -1,13 +1,11 @@
-
 <?php
-
-include('includes/header.php')
+include('includes/header.php');
 ?>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-        <?= alertMessage();?>
+        <?= alertMessage(); ?>
             <h2>Update Rugby Scores</h2>
             <form method="post" action="admin_functions.php">
                 <div class="mb-3">
@@ -15,9 +13,12 @@ include('includes/header.php')
                     <select id="fixture_id" name="fixture_id" class="form-select" required>
                         <option value="">Select Fixture</option>
                         <?php
-                        // Fetch fixtures from the database
-                        $sql = "SELECT id, match_date, home_team_id, away_team_id FROM rugby_matches";
-                        $stmt = $pdo->query($sql);
+                        // Fetch fixtures from the database based on the selected competition
+                        $competition_id = $_GET['competition_id']; // Assuming competition ID is passed via URL
+
+                        $sql = "SELECT id, match_date, home_team_id, away_team_id FROM rugby_matches WHERE competition_id = :competition_id";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute(['competition_id' => $competition_id]);
                         $fixtures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         // Get today's date
@@ -53,5 +54,4 @@ include('includes/header.php')
     </div>
 </div>
 
-<?php include('includes/footer.php');?>
-
+<?php include('includes/footer.php'); ?>

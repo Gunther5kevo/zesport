@@ -559,11 +559,12 @@ if (isset($_POST['updateUser'])) {
 
 if (isset($_POST['create_competition'])) {
     $competition_name = validate($_POST['competition']);
+    $gender = validate($_POST['gender']);
 
     try {
-        $sql = "INSERT INTO competitions (competition_name) VALUES (:competition_name)";
+        $sql = "INSERT INTO competitions (competition_name, gender) VALUES (:competition_name, :gender)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute(['competition_name' => $competition_name]);
+        $stmt->execute(['competition_name' => $competition_name, 'gender' => $gender]);
 
         $_SESSION['message'] = 'Competition created successfully';
         $_SESSION['alert_type'] = 'success';
@@ -575,6 +576,7 @@ if (isset($_POST['create_competition'])) {
     header('Location: create_tournament.php');
     exit();
 }
+
 
 ?>
 

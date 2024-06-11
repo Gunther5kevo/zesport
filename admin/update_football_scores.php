@@ -1,40 +1,34 @@
-<?php
-
-include('includes/header.php')
-?>
-
+<?php include('includes/header.php'); ?>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-        <?= alertMessage();?>
+            <?= alertMessage(); ?>
             <h2>Update Football Scores</h2>
             <form method="post" action="admin_functions.php">
+                <div class="mb-3">
+                    <label for="competition_id" class="form-label">Select Competition:</label>
+                    <select id="competition_id" name="competition_id" class="form-select" required>
+                        <option value="">Select Competition</option>
+                        <?php
+                        // Fetch competitions from the database
+                        $sql = "SELECT id, competition_name FROM competitions";
+                        $stmt = $pdo->query($sql);
+                        $competitions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        // Display competitions as dropdown options
+                        foreach ($competitions as $competition) {
+                            echo '<option value="' . htmlspecialchars($competition['id']) . '">';
+                            echo htmlspecialchars($competition['competition_name']) . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     <label for="fixture_id" class="form-label">Select Fixture:</label>
                     <select id="fixture_id" name="fixture_id" class="form-select" required>
                         <option value="">Select Fixture</option>
-                        <?php
-                        // Fetch fixtures from the database
-                         $sql = "SELECT id, match_date, home_team_id, away_team_id FROM football_matches 
-                         WHERE gender = 'Male'"; // Add this condition to fetch only male fixtures
-                        $stmt = $pdo->query($sql);
-                        $fixtures = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                        // Get today's date
-                        $currentDate = date('Y-m-d');
-
-                        // Display fixtures as dropdown options
-                        foreach ($fixtures as $fixture) {
-                            // Check if the match date is today
-                            if ($fixture['match_date'] == $currentDate) {
-                                // If the match date is today, enable the option
-                                echo '<option value="' . htmlspecialchars($fixture['id']) . '">';
-                                // Display the fixture details
-                                echo htmlspecialchars($fixture['match_date'] . ' - ' . $fixture['home_team_id'] . ' vs ' . $fixture['away_team_id']) . '</option>';
-                            }
-                        }
-                        ?>
                     </select>
                 </div>
 
@@ -54,6 +48,30 @@ include('includes/header.php')
     </div>
 </div>
 
-<?php include('includes/footer.php');?>
+<?php include('includes/footer.php'); ?>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+   $(document).ready(function() {
+    $('#competition_id').change(function() {
+        var competitionId = $(this).val();
+        console.log('Selected competition ID:', competitionId); // Debug statement
+        // Send an AJAX request to fetch fixtures for the selected competition
+        $.ajax({
+            type: 'POST',
+            url: 'fetch_fixtures.php', // Assuming you have a PHP file to handle fetching fixtures
+            data: { competition_id: competitionId },
+            success: function(response) {
+                // Clear existing options
+                $('#fixture_id').html('<option value="">Select Fixture</option>');
+                // Populate the fixture dropdown with fetched fixture data
+                $('#fixture_id').append(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching fixtures:', error);
+            }
+        });
+    });
+});
 
+</script>

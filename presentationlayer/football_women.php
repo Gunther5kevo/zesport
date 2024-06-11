@@ -61,27 +61,33 @@
 
     <div class="container">
         <?php
+        include('../datalayer/server.php');
         if (isset($_GET['action'])) {
             $action = $_GET['action'];
-            if ($action === 'results') {
-                include('female_results.php');
-            } elseif ($action === 'news') {
-                include('female_news.php');
-            } elseif ($action === 'fixtures') {
+            if ($action === 'standings' || $action === 'fixtures' || $action === 'results') {
                 ?>
                 <h2>Select Competition:</h2>
-                <form id="fixturesForm">
+                <form id="competitionForm">
                     <div class="mb-3">
                         <label for="competition" class="form-label">Competition:</label>
                         <select class="form-select" id="competition" name="competition_id">
-                            <option value="1">FKF Women Premier League</option>
-                            <option value="2">Kenyan Premier League</option>
-                            <!-- Add more options as needed -->
+                            <?php
+                            // Fetch competitions based on gender
+                            $gender = 'female'; // Assuming this is for female football
+                            $sql = "SELECT id, competition_name FROM competitions WHERE gender = :gender";
+                            $stmt = $pdo->prepare($sql);
+                            $stmt->execute(['gender' => $gender]);
+                            $competitions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            
+                            foreach ($competitions as $competition) {
+                                echo '<option value="' . $competition['id'] . '">' . $competition['competition_name'] . '</option>';
+                            }
+                            ?>
                         </select>
                     </div>
                 </form>
-                
-                <div id="fixturesContent"></div>
+
+                <div id="content"></div>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                 <script>
                     $(document).ready(function() {
@@ -89,36 +95,38 @@
                         $('#competition').change(function() {
                             // Get the selected competition ID
                             var competitionId = $(this).val();
+                            var action = '<?php echo $action; ?>'; // Get the action from PHP
 
-                            // Send an AJAX request to fetch fixtures based on the selected competition
+                            // Send an AJAX request to fetch data based on the selected competition
                             $.ajax({
                                 type: 'GET',
-                                url: 'female_fixtures.php', // Change the URL to the script that fetches fixtures
+                                url: 'female_' + action + '.php', // URL constructed based on gender and action
                                 data: { competition_id: competitionId },
                                 success: function(response) {
-                                    $('#fixturesContent').html(response); // Display the fetched fixtures
+                                    $('#content').html(response); // Display the fetched data
                                 },
                                 error: function(xhr, status, error) {
                                     console.error('Error:', error); // Log any errors
                                 }
                             });
                         });
-                        
-                        // Trigger change event to load the default competition fixtures
+
+                        // Trigger change event to load the default data
                         $("#competition").val($("#competition option:first").val()).change();
                     });
                 </script>
                 <?php
+            } elseif ($action === 'news') {
+                include('female_news.php');
             } else {
-                include('/standings/female_standings.php');
+                include('female_standings.php');
             }
         } else {
-            include('standings/female_standings.php');
+            include('female_standings.php');
         }
         ?>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
