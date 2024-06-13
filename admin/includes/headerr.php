@@ -21,12 +21,12 @@ session_start();
             padding-right: 20px;
         }
         .custom-navbar .navbar-nav .nav-link {
-            color: whitesmoke !important; 
-            text-transform: uppercase; 
-            margin-right: 15px; 
+            color: whitesmoke !important;
+            text-transform: uppercase;
+            margin-right: 15px;
         }
         .custom-navbar .navbar-brand {
-           margin-left: 70px;
+            margin-left: 70px;
         }
     </style>
 </head>
@@ -53,11 +53,23 @@ session_start();
                         <li><a class="dropdown-item" href="../presentationlayer/football_women.php">Women</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../presentationlayer/basketball.php">Basketball</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="basketballDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Basketball
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="basketballDropdown">
+                        <li><a class="dropdown-item" href="../presentationlayer/basketball_men.php">Men</a></li>
+                        <li><a class="dropdown-item" href="../presentationlayer/basketball_women.php">Women</a></li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../presentationlayer/rugby.php">Rugby</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="rugbyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Rugby
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="rugbyDropdown">
+                        <li><a class="dropdown-item" href="../presentationlayer/rugby_men.php">Men</a></li>
+                        <li><a class="dropdown-item" href="../presentationlayer/rugby_women.php">Women</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../presentationlayer/news.php">News</a>

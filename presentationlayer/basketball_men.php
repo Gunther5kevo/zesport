@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Fixtures - ZeSport</title>
+    <title>Basketball Fixtures - ZeSport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
@@ -43,16 +43,16 @@
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="football_men.php?action=standings">Standings</a>
+                        <a class="nav-link" href="basketball_men.php?action=standings">Standings</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="football_men.php?action=fixtures">Fixtures</a>
+                        <a class="nav-link" href="basketball_men.php?action=fixtures">Fixtures</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="football_men.php?action=results">Results</a>
+                        <a class="nav-link" href="basketball_men.php?action=results">Results</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="football_men.php?action=news">News</a>
+                        <a class="nav-link" href="basketball_men.php?action=news">News</a>
                     </li>
                 </ul>
             </div>
@@ -74,7 +74,7 @@
                             <?php 
                             // Fetch competitions based on gender
                             $gender = 'male';
-                            $sql = "SELECT id, competition_name FROM competitions WHERE gender = :gender";
+                            $sql = "SELECT id, competition_name FROM basketballcompetitions WHERE gender = :gender";
                             $stmt = $pdo->prepare($sql);
                             $stmt->execute(['gender' => $gender]);
                             $competitions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -90,38 +90,39 @@
                 <div id="content"></div>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                 <script>
-                    $(document).ready(function() {
-                      
-                        $('#competition').change(function() {
-                            // Get the selected competition ID
-                            var competitionId = $(this).val();
-                            var action = '<?php echo $action; ?>'; 
-                           
-                            $.ajax({
-                                type: 'GET',
-                                url: 'male_' + action + '.php', 
-                                data: { competition_id: competitionId },
-                                success: function(response) {
-                                    $('#content').html(response); 
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error('Error:', error); 
-                                }
+                  $(document).ready(function() {
+                    $('#competition').change(function() {
+                        // Get the selected competition ID
+                        var competitionId = $(this).val();
+                        var gender = 'male'; // Set the gender here or retrieve it from the page
+
+                        var action = '<?php echo $action; ?>'; 
+
+                        $.ajax({
+                            type: 'GET',
+                            url: 'basketball_male_' + action + '.php', 
+                            data: { competition_id: competitionId, gender: gender }, // Include gender parameter
+                            success: function(response) {
+                                $('#content').html(response); 
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error); 
+                            }
                             });
                         });
 
-                       
                         $("#competition").val($("#competition option:first").val()).change();
                     });
+
                 </script>
                 <?php
             } elseif ($action === 'news') {
-                include('male_news.php');
+                include('basketball_male_news.php');
             } else {
-                include('male_standings.php');
+                include('basketball_male_standings.php');
             }
         } else {
-            include('male_standings.php');
+            include('basketball_male_standings.php');
         }
         ?>
     </div>

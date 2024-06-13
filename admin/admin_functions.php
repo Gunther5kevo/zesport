@@ -368,28 +368,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_football_team"]
 //Creating Rugby Teams
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_rugby_team"])) {
-    // Get form data
-    $team_name = $_POST['team_name'];
+    // Assuming $pdo is your PDO database connection object
+    $team_name = isset($_POST['team_name']) ? $_POST['team_name'] : '';
+    $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
 
-    // Insert data into the database
-    $sql = "INSERT INTO rugby_teams (team_name) VALUES (:team_name)";
-    $stmt = $pdo->prepare($sql);
+    if (!empty($team_name) && !empty($gender)) {
+        try {
+            // Prepare the SQL statement with named placeholders
+            $sql = "INSERT INTO rugby_teams (team_name, gender) VALUES (:team_name, :gender)";
+            $stmt = $pdo->prepare($sql);
 
-    // Bind parameters
-    $stmt->bindParam(':team_name', $team_name);
+            // Bind the parameters to the named placeholders
+            $stmt->bindParam(':team_name', $team_name);
+            $stmt->bindParam(':gender', $gender);
 
-    // Execute statement
-    if ($stmt->execute()) {
-        // Set success message in session
-        $_SESSION['status'] = 'Team created successfully!';
+            // Execute the prepared statement
+            if ($stmt->execute()) {
+                redirect('create_teams.php', "Rugby team created successfully!");
+            } else {
+                redirect('create_teams.php', "Error: Unable to create rugby team.");
+            }
+        } catch (PDOException $e) {
+            // Handle database errors
+            redirect('create_teams.php', "Database error: " . $e->getMessage());
+        }
     } else {
-        // Set error message in session
-        $_SESSION['status'] = 'Error: Unable to create team.';
+        redirect('create_teams.php', "Team name and gender are required.");
     }
-
-    // Redirect back to create_teams.php
-    header('Location: create_teams.php');
-    exit();
 }
 
 
@@ -397,33 +402,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_rugby_team"])) 
 //Creating Baketball teams
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_basketball_team"])) {
-    // Include database connection
-    
+    // Assuming $pdo is your PDO database connection object
+    $team_name = isset($_POST['team_name']) ? $_POST['team_name'] : '';
+    $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
 
-    // Get form data
-    $team_name = $_POST['team_name'];
+    if (!empty($team_name) && !empty($gender)) {
+        try {
+            // Prepare the SQL statement with named placeholders
+            $sql = "INSERT INTO basketball_teams (team_name, gender) VALUES (:team_name, :gender)";
+            $stmt = $pdo->prepare($sql);
 
-    // Insert data into the database
-    $sql = "INSERT INTO basketball_teams (team_name) VALUES (:team_name)";
-    $stmt = $pdo->prepare($sql);
+            // Bind the parameters to the named placeholders
+            $stmt->bindParam(':team_name', $team_name);
+            $stmt->bindParam(':gender', $gender);
 
-    // Bind parameters
-    $stmt->bindParam(':team_name', $team_name);
-
-    // Execute statement
-    if ($stmt->execute()) {
-        // Set success message in session
-        $_SESSION['status'] = 'Team created successfully!';
+            // Execute the prepared statement
+            if ($stmt->execute()) {
+                redirect('create_teams.php', "Basketball team created successfully!");
+            } else {
+                redirect('create_teams.php', "Error: Unable to create basketball team.");
+            }
+        } catch (PDOException $e) {
+            // Handle database errors
+            redirect('create_teams.php', "Database error: " . $e->getMessage());
+        }
     } else {
-        // Set error message in session
-        $_SESSION['status'] = 'Error: Unable to create team.';
+        redirect('create_teams.php', "Team name and gender are required.");
     }
-
-    // Redirect back to create_teams.php
-    header('Location: create_teams.php');
-    exit();
 }
-
 
 
 //img upload

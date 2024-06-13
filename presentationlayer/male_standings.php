@@ -1,23 +1,18 @@
 <?php
 include('../datalayer/server.php'); 
 
-// Check if a competition ID is provided
-$competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 0; // Default to competition ID 1 if not provided
-
-// Fetch competition name
-$sql_competition = "SELECT competition_name, gender FROM competitions WHERE id = :competition_id";
+// Fetch competition name and gender (male only)
+$sql_competition = "SELECT id, competition_name, gender FROM competitions WHERE gender = 'male'";
 $stmt_competition = $pdo->prepare($sql_competition);
-$stmt_competition->execute(['competition_id' => $competitionId]);
+$stmt_competition->execute();
 $competition = $stmt_competition->fetch(PDO::FETCH_ASSOC);
 
 if ($competition) {
+    $competitionId = $competition['id'];
     echo '<h2>' . htmlspecialchars($competition['competition_name']) . '</h2>';
 } else {
-    echo '<h2>Competition Not Found</h2>';
+    die('<h2>No Male Competition Found</h2>');
 }
-
-// Determine the gender to fetch match results based on competition gender
-$gender = $competition['gender'] === 'male' ? 'male' : 'male';
 
 // Clear the standings table
 $truncate_query = "TRUNCATE TABLE male_standings";
@@ -62,7 +57,7 @@ FROM (
     WHERE 
         fm.competition_id = :competition_id AND
         fm.match_date <= CURDATE() AND
-        home.gender = :gender
+        home.gender = 'male'
 
     UNION ALL
 
@@ -86,7 +81,7 @@ FROM (
     WHERE 
         fm.competition_id = :competition_id AND
         fm.match_date <= CURDATE() AND
-        away.gender = :gender
+        away.gender = 'male'
 ) AS match_results
 GROUP BY team_id
 ORDER BY points DESC, goal_difference DESC, goals_for DESC
@@ -94,7 +89,7 @@ ORDER BY points DESC, goal_difference DESC, goals_for DESC
 
 try {
     $stmt = $pdo->prepare($insert_query);
-    $stmt->execute(['competition_id' => $competitionId, 'gender' => $gender]);
+    $stmt->execute(['competition_id' => $competitionId]);
 } catch (PDOException $e) {
     die("Error inserting standings: " . $e->getMessage());
 }
@@ -132,7 +127,6 @@ try {
     die("Error fetching standings: " . $e->getMessage());
 }
 
-echo "<h2>{$competition['competition_name']}</h2>";
 echo "<table>
         <tr>
             <th>Position</th>
