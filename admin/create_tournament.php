@@ -1,28 +1,28 @@
 <?php
 include('includes/header.php');
+
+
+// Define form actions for each sport
+$formActionFootball = "create_football_competition.php"; 
+$formActionBasketball = "create_basketball_competition.php"; 
+$formActionRugby = "create_rugby_competition.php"; 
 ?>
 
-<div class="row">
+<div class="container">
+    <div class="row">
     <div class="col-md-12">
-        <div class="card">
-            <?= alertMessage(); ?>
-            <h4>Create New Tournament</h4>
-            <form method="post" action="admin_functions.php">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="competition" class="form-label">Competition Name:</label>
-                        <input type="text" id="competition" name="competition" class="form-control" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="gender" class="form-label">Gender:</label>
-                        <select id="gender" name="gender" class="form-select" required>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" name="create_competition">Create Tournament</button>
-            </form>
+        <?= alertMessage(); ?>
+    </div>
+        <div class="col-md-6">
+            <?php generateCompetitionForm('football', $formActionFootball); ?>
+        </div>
+        <div class="col-md-6">
+            <?php generateCompetitionForm('basketball', $formActionBasketball); ?>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <?php generateCompetitionForm('rugby', $formActionRugby); ?>
         </div>
     </div>
 </div>

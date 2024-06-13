@@ -1,6 +1,6 @@
 <?php
 include ('../datalayer/server.php');
-include('../admin/includes/headerr.php')
+include('../admin/includes/navbar.php')
 ?>
 
 <!DOCTYPE html>

@@ -1,5 +1,5 @@
 <?php
-include('../datalayer/server.php'); 
+include('../datalayer/server.php');
 
 // Fetch competition name and gender (male only)
 $sql_competition = "SELECT id, competition_name, gender FROM competitions WHERE gender = 'male'";
@@ -7,12 +7,11 @@ $stmt_competition = $pdo->prepare($sql_competition);
 $stmt_competition->execute();
 $competition = $stmt_competition->fetch(PDO::FETCH_ASSOC);
 
-if ($competition) {
-    $competitionId = $competition['id'];
-    echo '<h2>' . htmlspecialchars($competition['competition_name']) . '</h2>';
-} else {
+if (!$competition) {
     die('<h2>No Male Competition Found</h2>');
 }
+
+$competitionId = $competition['id'];
 
 // Clear the standings table
 $truncate_query = "TRUNCATE TABLE male_standings";
@@ -94,10 +93,9 @@ try {
     die("Error inserting standings: " . $e->getMessage());
 }
 
-// Fetch and display the standings
+// Fetch the standings and calculate positions
 $select_query = "
 SELECT 
-    ROW_NUMBER() OVER () AS position,
     teams.team_name,
     male_standings.played,
     male_standings.won,
@@ -123,10 +121,36 @@ try {
     $stmt = $pdo->prepare($select_query);
     $stmt->execute(['competition_id' => $competitionId]);
     $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Initialize variables for position calculation
+    $currentPosition = 1;
+    $previousStats = null;
+
+    // Iterate through standings to calculate positions
+    foreach ($standings as &$team) {
+        // Check if current team has the same stats as previous team
+        if ($previousStats !== null &&
+            $team['points'] == $previousStats['points'] &&
+            $team['goal_difference'] == $previousStats['goal_difference'] &&
+            $team['goals_for'] == $previousStats['goals_for']) {
+            // Assign the same position as previous team
+            $team['position'] = $currentPosition;
+        } else {
+            // Assign current position and update currentPosition
+            $team['position'] = $currentPosition;
+            $currentPosition++;
+        }
+
+        // Update previous stats to current team
+        $previousStats = $team;
+    }
+
 } catch (PDOException $e) {
     die("Error fetching standings: " . $e->getMessage());
 }
 
+// Display the standings in an HTML table
+echo "<h2>{$competition['competition_name']}</h2>";
 echo "<table>
         <tr>
             <th>Position</th>

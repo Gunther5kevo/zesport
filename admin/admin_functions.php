@@ -119,36 +119,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_basketball_fixture'])) {
     $match_date = $_POST['match_date'];
+    $match_time = $_POST['match_time']; 
     $home_team = $_POST['home_team'];
     $away_team = $_POST['away_team'];
     $venue = $_POST['venue'];
     $referee = $_POST['referee'];
-    $competition_id = $_POST['competition']; // Retrieve competition ID from form
+    $competition_id = $_POST['competition'];
+    
+    $gender = $_POST['gender']; 
 
     try {
-        $sql = "INSERT INTO basketball_matches (match_date, home_team_id, away_team_id, competition_id, venue, referee)
-                VALUES (:match_date, :home_team, :away_team, :competition_id, :venue, :referee)";
+        $sql = "INSERT INTO basketball_matches (match_date, match_time, home_team_id, away_team_id, competition_id, venue, referee, gender)
+                VALUES (:match_date, :match_time, :home_team, :away_team, :competition_id,:venue, :referee, :gender)";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             'match_date' => $match_date,
+            'match_time' => $match_time,
             'home_team' => $home_team,
             'away_team' => $away_team,
             'competition_id' => $competition_id,
+            
             'venue' => $venue,
-            'referee' => $referee
+            'referee' => $referee,
+            'gender' => $gender // Bind the gender parameter
         ]);
 
         // Set success message
-        $_SESSION['status'] = "Basketball fixture created successfully!";
-        // Redirect to admin dashboard after successful insertion
-        header('Location: create_basketball_fixtures.php');
+        $_SESSION['status'] = "Fixture created successfully!";
+        // Redirect to admin dashboard
+        header("Location: create_basketball_fixtures.php");
         exit();
     } catch (PDOException $e) {
         // Set error message
         $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
         // Redirect to admin dashboard
-        header('Location: create_basketball_fixtures.php');
+        header("Location: create_basketball_fixtures.php");
         exit();
     }
 }
@@ -156,41 +162,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_basketball_fix
 
     //rugby fixtures
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rugby_fixture'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rugby_fixture'])) {
         $match_date = $_POST['match_date'];
+        $match_time = $_POST['match_time']; 
         $home_team = $_POST['home_team'];
         $away_team = $_POST['away_team'];
         $venue = $_POST['venue'];
         $referee = $_POST['referee'];
-        $competition_id = $_POST['competition']; // Retrieve competition ID from form
+        $competition_id = $_POST['competition'];
+        
+        $gender = $_POST['gender']; 
     
         try {
-            $sql = "INSERT INTO rugby_matches (match_date, home_team_id, away_team_id, competition_id, venue, referee)
-                    VALUES (:match_date, :home_team, :away_team, :competition_id, :venue, :referee)";
+            $sql = "INSERT INTO rugby_matches (match_date, match_time, home_team_id, away_team_id, competition_id, venue, referee, gender)
+                    VALUES (:match_date, :match_time, :home_team, :away_team, :competition_id,:venue, :referee, :gender)";
     
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 'match_date' => $match_date,
+                'match_time' => $match_time,
                 'home_team' => $home_team,
                 'away_team' => $away_team,
                 'competition_id' => $competition_id,
+                
                 'venue' => $venue,
-                'referee' => $referee
+                'referee' => $referee,
+                'gender' => $gender 
             ]);
     
             // Set success message
-            $_SESSION['status'] = "Rugby fixture created successfully!";
-            // Redirect to admin dashboard after successful insertion
-            header('Location: create_rugby_fixtures.php');
+            $_SESSION['status'] = "Fixture created successfully!";
+            // Redirect to admin dashboard
+            header("Location: create_rugby_fixtures.php");
             exit();
         } catch (PDOException $e) {
             // Set error message
             $_SESSION['status'] = "Insertion failed: " . $e->getMessage();
             // Redirect to admin dashboard
-            header('Location: admin_dashboard.php');
+            header("Location: create_rugby_fixtures.php");
             exit();
         }
-}
+    }
     
 
     
@@ -561,27 +573,6 @@ if (isset($_POST['updateUser'])) {
 
 //creating competitions 
 
-
-
-if (isset($_POST['create_competition'])) {
-    $competition_name = validate($_POST['competition']);
-    $gender = validate($_POST['gender']);
-
-    try {
-        $sql = "INSERT INTO competitions (competition_name, gender) VALUES (:competition_name, :gender)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['competition_name' => $competition_name, 'gender' => $gender]);
-
-        $_SESSION['message'] = 'Competition created successfully';
-        $_SESSION['alert_type'] = 'success';
-    } catch (PDOException $e) {
-        $_SESSION['message'] = 'Failed to create competition: ' . $e->getMessage();
-        $_SESSION['alert_type'] = 'danger';
-    }
-
-    header('Location: create_tournament.php');
-    exit();
-}
 
 
 ?>

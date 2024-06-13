@@ -1,20 +1,19 @@
 <?php
 include('../admin/includes/navbar.php')
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football - ZeSport</title>
+    <title>Rugby- ZeSport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
+   
 </head>
 <body>
- >
-
+    
     <div class="container">
         <?php
         include('../datalayer/server.php');
@@ -30,7 +29,7 @@ include('../admin/includes/navbar.php')
                             <?php 
                             // Fetch competitions based on gender
                             $gender = 'male';
-                            $sql = "SELECT id, competition_name FROM competitions WHERE gender = :gender";
+                            $sql = "SELECT id, competition_name FROM rugby_competitions WHERE gender = :gender";
                             $stmt = $pdo->prepare($sql);
                             $stmt->execute(['gender' => $gender]);
                             $competitions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -47,7 +46,6 @@ include('../admin/includes/navbar.php')
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                 <script>
                     $(document).ready(function() {
-                      
                         $('#competition').change(function() {
                             // Get the selected competition ID
                             var competitionId = $(this).val();
@@ -55,7 +53,7 @@ include('../admin/includes/navbar.php')
                            
                             $.ajax({
                                 type: 'GET',
-                                url: 'male_' + action + '.php', 
+                                url: 'rugby_male_' + action + '.php', 
                                 data: { competition_id: competitionId },
                                 success: function(response) {
                                     $('#content').html(response); 
@@ -66,32 +64,24 @@ include('../admin/includes/navbar.php')
                             });
                         });
 
-                       
                         $("#competition").val($("#competition option:first").val()).change();
                     });
                 </script>
                 <?php
             } elseif ($action === 'news') {
-                include('male_news.php');
+                include('rugby_news.php');
             } else {
-                include('male_standings.php');
+                include('rugby_male_standings.php');
             }
         } else {
-            include('male_standings.php');
+            include('rugby_male_standings.php');
         }
         ?>
     </div>
 
-     
-     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

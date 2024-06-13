@@ -8,12 +8,12 @@ try {
     $stmt_competition->execute();
     $competition = $stmt_competition->fetch(PDO::FETCH_ASSOC);
 
-    if ($competition) {
-        $competitionId = $competition['id'];
-        $gender = 'male'; // Assuming the gender is fixed for female competitions
-    } else {
+    if (!$competition) {
         die('<h2>No Female Basketball Competition Found</h2>');
     }
+
+    $competitionId = $competition['id'];
+    $gender = 'male'; 
 
     // Clear the standings table
     $pdo->exec("TRUNCATE TABLE basketball_standings");
@@ -71,11 +71,19 @@ try {
     $stmt->execute(['competition_id' => $competitionId, 'gender' => $gender]);
 
     // Fetch and display the standings
-    $result = $pdo->query("SELECT * FROM basketball_standings ORDER BY win_percentage DESC, points_for DESC, points_against ASC, team_name ASC");
+    $result = $pdo->query("SELECT *, 
+        CASE 
+            WHEN @prevPercentage = win_percentage AND @prevPointsFor = points_for AND @prevPointsAgainst = points_against THEN @curRank 
+            WHEN (@prevPercentage := win_percentage) IS NOT NULL AND (@prevPointsFor := points_for) IS NOT NULL AND (@prevPointsAgainst := points_against) IS NOT NULL THEN @curRank := @curRank + 1
+            ELSE @curRank := 1 
+        END AS position
+    FROM basketball_standings, (SELECT @curRank := 0, @prevPercentage := NULL, @prevPointsFor := NULL, @prevPointsAgainst := NULL) AS vars
+    ORDER BY win_percentage DESC, points_for DESC, points_against ASC, team_name ASC");
 
     echo "<h2>Basketball Standings</h2>";
     echo "<table>
             <tr>
+                <th>Position</th>
                 <th>Team</th>
                 <th>Games Played</th>
                 <th>Wins</th>
@@ -87,6 +95,7 @@ try {
 
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         echo "<tr>
+                <td>{$row['position']}</td>
                 <td>{$row['team_name']}</td>
                 <td>{$row['games_played']}</td>
                 <td>{$row['wins']}</td>
