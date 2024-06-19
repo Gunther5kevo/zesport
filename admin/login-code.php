@@ -52,4 +52,3 @@ if (isset($_POST['login'])) {
         redirect('login.php', 'All Fields Required');
     }
 }
-?>

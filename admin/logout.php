@@ -22,4 +22,4 @@ if (isset($_SESSION['auth'])) {
 } else {
     redirect('login.php', 'You are not logged in.');
 }
-?>
+

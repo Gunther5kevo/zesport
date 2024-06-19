@@ -42,7 +42,7 @@
                     <input type="number" id="away_score" name="away_score" class="form-control" required>
                 </div>
 
-                <button type="submit" name="update_football_scores" class="btn btn-primary">Update Scores</button>
+                <button type="submit" name="update_basketball_scores" class="btn btn-primary">Update Scores</button>
             </form>
         </div>
     </div>

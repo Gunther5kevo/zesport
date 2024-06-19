@@ -15,19 +15,15 @@
         }
         .custom-navbar .navbar-nav .nav-link {
             color: #ffffff !important;
-            text-transform: sentencecase;
+            text-transform: capitalize;
             margin-right: 10px;
+            white-space: nowrap; /* Prevents wrapping to the next line */
         }
         .custom-navbar .navbar-brand {
             margin-left: 70px;
         }
-        .dropdown-submenu {
-            position: relative;
-        }
-        .dropdown-submenu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-top: -1px;
+        .navbar-nav {
+            flex-wrap: nowrap; /* Prevents wrapping of the entire navbar */
         }
     </style>
 </head>
@@ -50,82 +46,14 @@
                         Sports
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="sportsDropdown">
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#" id="footballDropdown" role="button" aria-expanded="false">
-                                Football
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#" id="footballMenDropdown" role="button" aria-expanded="false">
-                                        Men
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="football_men.php?action=standings">Standings</a></li>
-                                        <li><a class="dropdown-item" href="football_men.php?action=fixtures">Fixtures</a></li>
-                                        <li><a class="dropdown-item" href="football_men.php?action=results">Results</a></li>
-                                        <li><a class="dropdown-item" href="football_men.php?action=news">News</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#" id="footballWomenDropdown" role="button" aria-expanded="false">
-                                        Women
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="football_women.php?action=standings">Standings</a></li>
-                                        <li><a class="dropdown-item" href="football_women.php?action=fixtures">Fixtures</a></li>
-                                        <li><a class="dropdown-item" href="football_women.php?action=results">Results</a></li>
-                                        <li><a class="dropdown-item" href="football_women.php?action=news">News</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
+                        <li>
+                            <a class="dropdown-item" href="../presentationlayer/football.php">Football</a>
                         </li>
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#" id="basketballDropdown" role="button" aria-expanded="false">
-                                Basketball
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#" id="basketballMenDropdown" role="button" aria-expanded="false">
-                                        Men
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="basketball_men.php?action=standings">Standings</a></li>
-                                        <li><a class="dropdown-item" href="basketball_men.php?action=fixtures">Fixtures</a></li>
-                                        <li><a class="dropdown-item" href="basketball_men.php?action=results">Results</a></li>
-                                        <li><a class="dropdown-item" href="basketball_men.php?action=news">News</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#" id="basketballWomenDropdown" role="button" aria-expanded="false">
-                                        Women
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="basketball_women.php?action=standings">Standings</a></li>
-                                        <li><a class="dropdown-item" href="basketball_women.php?action=fixtures">Fixtures</a></li>
-                                        <li><a class="dropdown-item" href="basketball_women.php?action=results">Results</a></li>
-                                        <li><a class="dropdown-item" href="basketball_women.php?action=news">News</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
+                        <li>
+                            <a class="dropdown-item" href="../presentationlayer/basketball.php">Basketball</a>
                         </li>
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#" id="rugbyDropdown" role="button" aria-expanded="false">
-                                Rugby
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#" id="rugbyMenDropdown" role="button" aria-expanded="false">
-                                        Men
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="rugby_men.php?action=standings">Standings</a></li>
-                                        <li><a class="dropdown-item" href="rugby_men.php?action=fixtures">Fixtures</a></li>
-                                        <li><a class="dropdown-item" href="rugby_men.php?action=results">Results</a></li>
-                                        <li><a class="dropdown-item" href="rugby_men.php?action=news">News</a></li>
-                                    </ul>
-                                </li>
-                                <li><a class="dropdown-item" href="../presentationlayer/rugby_women.php">Women</a></li>
-                            </ul>
+                        <li>
+                            <a class="dropdown-item" href="../presenatationlayer/rugby.php">Rugby</a>
                         </li>
                     </ul>
                 </li>
@@ -143,11 +71,11 @@
                 </li>
                 <?php if (isset($_SESSION['auth'])): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="../admin/logout.php">Logout</a>
+                        <a class="nav-link" href="./logout.php">Logout</a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="../admin/login.php">Login</a>
+                        <a class="nav-link" href="./login.php">Login</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -159,25 +87,3 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-<!-- Custom JavaScript for handling multi-level dropdowns -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
-
-        dropdownSubmenus.forEach(function(submenu) {
-            submenu.addEventListener('mouseenter', function() {
-                var submenuDropdown = submenu.querySelector('.dropdown-menu');
-                if (submenuDropdown) {
-                    submenuDropdown.classList.add('show');
-                }
-            });
-
-            submenu.addEventListener('mouseleave', function() {
-                var submenuDropdown = submenu.querySelector('.dropdown-menu');
-                if (submenuDropdown) {
-                    submenuDropdown.classList.remove('show');
-                }
-            });
-        });
-    });
-</script>

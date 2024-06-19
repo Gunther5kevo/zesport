@@ -15,7 +15,28 @@ include('../admin/includes/headerr.php')
 <body>
 
 <main>
+   
+<section class="news-section">
     <?php
+    // Static news items
+    $staticPosts = [
+        [
+            'image' => 'assets/img/titans.png',
+            'title' => 'Higher and Higher',
+            'author' => 'Kevin',
+            'date' => 'June 5, 2024',
+            'content' => 'Introducing to you the Kenya Basketball Federation Div 1 2021 champions.'
+        ],
+        [
+            'image' => 'assets/img/rugby22.png',
+            'title' => 'Sisi ndio Machampe! ',
+            'author' => 'Admin',
+            'date' => 'June 2, 2024',
+            'content' => 'Zetech Oaks are the Kenya Rugby Union Nationwide League 2023/24 season champions after emerging victorious against the Technical University of Mombasa (TUM) Marines with a 31-13 win in a final held at the RFUEA Grounds in Nairobi on Saturday.'
+        ]
+    ];
+
+    // Include database fetch for dynamic news items
     include('../datalayer/blog.php');
     $perPage = 6;
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -24,10 +45,31 @@ include('../admin/includes/headerr.php')
     $totalPosts = countTotalPosts($pdo, $category);
     $totalPages = ceil($totalPosts / $perPage);
     ?>
-<section class="news-section">
     <div class="container">
         <div class="row">
-            <?php foreach ($posts as $post) : ?>
+            <?php
+            // Display static posts
+            foreach ($staticPosts as $post) :
+            ?>
+                <div class="col-md-6 d-flex">
+                    <div class="news-item card flex-fill">
+                        <img src="../presentationlayer/assets/img/avatar/<?php echo htmlspecialchars($post['image']); ?>" alt="News Image" class="card-img-top">
+                        <div class="card-body d-flex flex-column">
+                            <h2 class="card-title"><?php echo htmlspecialchars($post['title']); ?></h2>
+                            <p class="meta">
+                                <span class="author">By <?php echo htmlspecialchars($post['author']); ?></span>
+                                <span class="date"><?php echo htmlspecialchars($post['date']); ?></span>
+                            </p>
+                            <p class="card-text"><?php echo htmlspecialchars($post['content']); ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php
+            endforeach;
+
+            // Display dynamic posts fetched from database
+            foreach ($posts as $post) :
+            ?>
                 <div class="col-md-6 d-flex">
                     <div class="news-item card flex-fill">
                         <?php if (!empty($post['image'])) : ?>
@@ -56,9 +98,7 @@ include('../admin/includes/headerr.php')
             </ul>
         </nav>
     </div>
-    </section>
-
-
+</section>
 
     <section class="video-section">
     <?php

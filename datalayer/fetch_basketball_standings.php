@@ -2,38 +2,46 @@
 include('../datalayer/server.php');
 
 try {
-    // Query to find basketball competitions for females
-    $sql_competition = "SELECT id, competition_name, gender FROM basketballcompetitions WHERE gender = 'female'";
+    // Check if a competition ID is provided
+    $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 0;
+
+    if ($competitionId === 0) {
+        die('<h2>No valid competition ID provided</h2>');
+    }
+
+    // Query to find the basketball competition details
+    $sql_competition = "SELECT id, competition_name, gender FROM basketballcompetitions WHERE id = :competition_id";
     $stmt_competition = $pdo->prepare($sql_competition);
-    $stmt_competition->execute();
+    $stmt_competition->execute(['competition_id' => $competitionId]);
     $competition = $stmt_competition->fetch(PDO::FETCH_ASSOC);
 
     if (!$competition) {
-        die('<h2>No Female Basketball Competition Found</h2>');
+        die('<h2>Competition not found</h2>');
     }
 
-    $competitionId = $competition['id'];
-    $gender = 'female'; // Assuming the gender is fixed for female competitions
+    $gender = $competition['gender'];
 
-    // Clear the standings table
-    $pdo->exec("TRUNCATE TABLE basketball_standings");
+    // Clear the standings table for the specific competition
+    $pdo->prepare("DELETE FROM basketball_standings WHERE competition_id = :competition_id")->execute(['competition_id' => $competitionId]);
 
     // Insert the calculated standings into the standings table
     $query = "
-    INSERT INTO basketball_standings (team_id, team_name, games_played, wins, losses, points_for, points_against, win_percentage)
+    INSERT INTO basketball_standings (competition_id, team_id, team_name, games_played, wins, losses, points_for, points_against, win_percentage)
     SELECT
-        team_id,
-        team_name,
-        COUNT(*) AS games_played,
-        SUM(wins) AS wins,
-        SUM(losses) AS losses,
-        SUM(points_for) AS points_for,
-        SUM(points_against) AS points_against,
-        ROUND(SUM(wins) / COUNT(*), 3) AS win_percentage
-    FROM (
+        :competition_id AS competition_id,
+        t.id AS team_id,
+        t.team_name AS team_name,
+        COALESCE(SUM(games_played), 0) AS games_played,
+        COALESCE(SUM(wins), 0) AS wins,
+        COALESCE(SUM(losses), 0) AS losses,
+        COALESCE(SUM(points_for), 0) AS points_for,
+        COALESCE(SUM(points_against), 0) AS points_against,
+        COALESCE(ROUND(SUM(wins) / NULLIF(SUM(games_played), 0), 3), 0) AS win_percentage
+    FROM 
+        basketball_teams t
+    LEFT JOIN (
         SELECT 
             home.id AS team_id,
-            home.team_name AS team_name,
             1 AS games_played,
             CASE WHEN fm.home_score > fm.away_score THEN 1 ELSE 0 END AS wins,
             CASE WHEN fm.home_score < fm.away_score THEN 1 ELSE 0 END AS losses,
@@ -50,7 +58,6 @@ try {
 
         SELECT 
             away.id AS team_id,
-            away.team_name AS team_name,
             1 AS games_played,
             CASE WHEN fm.away_score > fm.home_score THEN 1 ELSE 0 END AS wins,
             CASE WHEN fm.away_score < fm.home_score THEN 1 ELSE 0 END AS losses,
@@ -62,8 +69,9 @@ try {
             basketball_teams away ON fm.away_team_id = away.id
         WHERE 
             fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND away.gender = :gender
-    ) AS match_results
-    GROUP BY team_id, team_name
+    ) AS match_results ON t.id = match_results.team_id
+    WHERE t.gender = :gender
+    GROUP BY t.id, t.team_name
     ORDER BY win_percentage DESC, points_for DESC, points_against ASC, team_name ASC
     ";
 
@@ -71,16 +79,24 @@ try {
     $stmt->execute(['competition_id' => $competitionId, 'gender' => $gender]);
 
     // Fetch and display the standings
-    $result = $pdo->query("SELECT *, 
-        CASE 
-            WHEN @prevPercentage = win_percentage AND @prevPointsFor = points_for AND @prevPointsAgainst = points_against THEN @curRank 
-            WHEN (@prevPercentage := win_percentage) IS NOT NULL AND (@prevPointsFor := points_for) IS NOT NULL AND (@prevPointsAgainst := points_against) IS NOT NULL THEN @curRank := @curRank + 1
-            ELSE @curRank := 1 
-        END AS position
-    FROM basketball_standings, (SELECT @curRank := 0, @prevPercentage := NULL, @prevPointsFor := NULL, @prevPointsAgainst := NULL) AS vars
-    ORDER BY win_percentage DESC, points_for DESC, points_against ASC, team_name ASC");
+    $result = $pdo->prepare("
+        SELECT 
+            team_id, team_name, games_played, wins, losses, points_for, points_against, win_percentage,
+            @curRank := IF(@prevPercentage = win_percentage AND @prevPointsFor = points_for AND @prevPointsAgainst = points_against, @curRank, @curRank + 1) AS position,
+            @prevPercentage := win_percentage,
+            @prevPointsFor := points_for,
+            @prevPointsAgainst := points_against
+        FROM 
+            basketball_standings, 
+            (SELECT @curRank := 0, @prevPercentage := NULL, @prevPointsFor := NULL, @prevPointsAgainst := NULL) AS vars
+        WHERE 
+            competition_id = :competition_id
+        ORDER BY 
+            win_percentage DESC, points_for DESC, points_against ASC, team_name ASC
+    ");
+    $result->execute(['competition_id' => $competitionId]);
 
-    echo "<h2>Basketball Standings</h2>";
+    echo "<h2>Basketball Standings for " . htmlspecialchars($competition['competition_name']) . "</h2>";
     echo "<table>
             <tr>
                 <th>Position</th>
@@ -111,4 +127,4 @@ try {
 } catch (PDOException $e) {
     echo 'Database error: ' . $e->getMessage();
 }
-?>
+

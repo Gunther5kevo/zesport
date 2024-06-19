@@ -1,47 +1,38 @@
 <?php
 
-
-// Include necessary files and setup database connection
-require '../vendor/autoload.php'; // Include autoloader for FFMpeg library
-use FFMpeg\FFMpeg;
-use FFMpeg\Coordinate\TimeCode;
-
 include('../datalayer/server.php'); // Include database connection file
 include('functions.php');
 
 
+require '../vendor/autoload.php'; 
+
+
+
+use FFMpeg\FFMpeg;
+use FFMpeg\Coordinate\TimeCode;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    // Ensure a file was selected for upload
     if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
-        // Get video details
         $videoName = $_FILES['video']['name'];
         $videoTmp = $_FILES['video']['tmp_name'];
         $title = isset($_POST['title']) ? $_POST['title'] : '';
         $category = isset($_POST['category']) ? $_POST['category'] : '';
 
-        // Destination paths
         $videoDirectory = '../presentationlayer/assets/videos/';
         $thumbnailDirectory = '../presentationlayer/assets/thumbnails/';
 
-        // Generate unique file names
         $videoPath = $videoDirectory . uniqid() . '_' . $videoName;
         $thumbnailPath = $thumbnailDirectory . uniqid() . '_' . pathinfo($videoName, PATHINFO_FILENAME) . '.png';
 
-        // Move uploaded files to destination directories
         if (move_uploaded_file($videoTmp, $videoPath)) {
-            // Create FFMpeg instance
             $ffmpeg = FFMpeg::create([
                 'ffmpeg.binaries'  => 'C:\ProgramData\chocolatey\bin\ffmpeg.exe', 
-                'ffprobe.binaries' => 'C:\ProgramData\chocolatey\bin\ffprobe.exe', // Specify path to ffprobe binary
+                'ffprobe.binaries' => 'C:\ProgramData\chocolatey\bin\ffprobe.exe',
             ]);
 
-            // Open uploaded video using FFMpeg
             $video = $ffmpeg->open($videoPath);
-
-            // Generate thumbnail at 10 seconds (adjust as needed)
             $video->frame(TimeCode::fromSeconds(10))->save($thumbnailPath);
 
-            // Insert video details into database
             $query = "INSERT INTO videos (title, url, thumbnail, category, upload_date) VALUES (:title, :url, :thumbnail, :category, NOW())";
             $stmt = $pdo->prepare($query);
             $stmt->bindParam(':title', $title);
@@ -50,20 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             $stmt->bindParam(':category', $category);
 
             if ($stmt->execute()) {
+                $_SESSION['status'] = "Video uploaded successfully.";
                 header('Location: upload_videos.php');
                 exit();
             } else {
-                echo "Error inserting video details into database.";
+                $_SESSION['status'] = "Error inserting video details into database.";
+                header('Location: upload_videos.php');
+                exit();
             }
         } else {
-            echo "Error moving uploaded video to destination directory.";
+            $_SESSION['status'] = "Error moving uploaded video to destination directory.";
+            header('Location: upload_videos.php');
+            exit();
         }
     } else {
-        // Handle file upload error
-        echo "Error uploading video.";
+        $_SESSION['status'] = "Error uploading video.";
+        header('Location: upload_videos.php');
+        exit();
     }
 }
-
 
 
 // Football fixture

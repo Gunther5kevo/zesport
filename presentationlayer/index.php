@@ -1,6 +1,7 @@
 <?php
+
 include ('../datalayer/server.php');
-include('../admin/includes/navbar.php')
+include('../admin/includes/headerr.php')
 ?>
 
 <!DOCTYPE html>
@@ -105,96 +106,107 @@ include('../admin/includes/navbar.php')
 
     </section>
     <section class="video-section">
-  <?php
-  include('../datalayer/video-section.php');
-
-  // Define the categories
-  $categories = ['football', 'basketball', 'rugby'];
-
-  // Initialize an empty array to store videos by category
-  $videosByCategory = [];
-
-  // Fetch videos for each category
-  foreach ($categories as $category) {
-      $videosByCategory[$category] = getVideosByCategory($pdo, $category, 4);
-  }
-  ?>
-  
-  <div class="container">
-    <div class="row">
-      <?php foreach ($videosByCategory as $category => $videos) : ?>
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-header">
-              <h2><?php echo htmlspecialchars(ucwords($category)) ?> Highlights</h2>
-            </div>
-            <div class="card-body">
-              <?php foreach ($videos as $video) : ?>
-                <div class="video-item">
-                  <h3><?php echo htmlspecialchars($video['title']); ?></h3>
-                  <p><?php echo htmlspecialchars($video['description']); ?></p>
-                  <div class="video-thumbnail">
-                    <a href="news.php?video_url=<?php echo urlencode($video['url']); ?>&video_title=<?php echo urlencode($video['title']); ?>&video_description=<?php echo urlencode($video['description']); ?>">
-                      <img src="<?php echo htmlspecialchars($video['thumbnail']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>">
-                      <i class="play-icon fas fa-play-circle"></i> 
-                    </a>
-                  </div>
+    <div class="container">
+        <div class="row">
+            <!-- Football Highlights -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Football Highlights</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="video-item">
+                            <div class="video-description">
+                                <h3>Zetech Titans Fc</h3>
+                            </div>
+                            <div>
+                                <p> Always ready to showcase their talent and emerge victorious in any competition.</p>
+                            </div>
+                            <div class="video-thumbnail">
+                                <a href="news.php?video_url=football_video_1.mp4&video_title=Football Video Title 1&video_description=Short description of football video 1.">
+                                    <img src="assets/videos/Snapinsta.app_video_10000000_1616873835747587_7128927841519552347_n.png" alt="Football Video Title 1">
+                                    <i class="play-icon fas fa-play-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              <?php endforeach; ?>
             </div>
-          </div>
+
+            <!-- Basketball Highlights -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Basketball Highlights</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="video-item">
+                            <div class="video-description">
+                                <h3>Titans on the go</h3>
+                            </div>
+                            <div>
+                                <p>Zetech Titans manifesting their skills in the court.</p>
+                            </div>
+                            <div class="video-thumbnail">
+                                <a href="news.php?video_url=basketball_video_1.mp4&video_title=Basketball Video Title 1&video_description=Short description of basketball video 1.">
+                                    <img src="assets/videos/Snapinsta.app_video_B640673080DE5DCB4536559DF0E52E8D_video_dashinit.png" alt="Basketball Video Title 1">
+                                    <i class="play-icon fas fa-play-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rugby Highlights -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Rugby Highlights</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="video-item">
+                            <div class="video-description">
+                                <h3>New kit for the rugby team</h3>
+                            </div>
+                            <div>
+                                <p>A boost to the rugby squad after the school unveils new kit for them.</p>
+                            </div>
+                            <div class="video-thumbnail">
+                                <a href="news.php?video_url=rugby_video_1.mp4&video_title=Rugby Video Title 1&video_description=Short description of rugby video 1.">
+                                    <img src="assets/videos/Snapinsta.app_video_438966095_466569592499138_8280443329152143839_n.png" alt="Rugby Video Title 1">
+                                    <i class="play-icon fas fa-play-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      <?php endforeach; ?>
     </div>
-  </div>
 </section>
 
-
-
-
-
-
-    <section class="gallery">
-        <div class="container">
+<section class="gallery">
+    <div class="container">
         <div class="section-head">
             <h4>Gallery</h4>
             <div class="underline"></div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <a href="assets/img/avatar/gallery1.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery1.jpg" alt="Sample Image"></a>
+                <a href="gallery.php"><img class="img-fluid" src="assets/img/avatar/gallery1.jpg" alt="Sample Image"></a>
             </div>
             <div class="col-md-4">
-                <a href="assets/img/avatar/gallery2.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery2.jpg" alt="Sample Image"></a>
+                <a href="gallery.php"><img class="img-fluid" src="assets/img/avatar/gallery4.jpg" alt="Sample Image"></a>
             </div>
             <div class="col-md-4">
-                <a href="assets/img/avatar/gallery3.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery3.jpg" alt="Sample Image"></a>
+                <a href="gallery.php"><img class="img-fluid" src="assets/img/avatar/gallery5.jpg" alt="Sample Image"></a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <a href="assets/img/avatar/gallery4.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery4.jpg" alt="Sample Image"></a>
-            </div>
-            <div class="col-md-4">
-                <a href="assets/img/avatar/gallery5.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery5.jpg" alt="Sample Image"></a>
-            </div>
-            <div class="col-md-4">
-                <a href="assets/img/avatar/gallery6.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery6.jpg" alt="Sample Image"></a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <a href="assets/img/avatar/gallery7.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery7.jpg" alt="Sample Image"></a>
-            </div>
-            <div class="col-md-4">
-                <a href="assets/img/avatar/gallery8.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery8.jpg" alt="Sample Image"></a>
-            </div>
-            <div class="col-md-4">
-                <a href="assets/img/avatar/gallery9.jpg" class="image-popup"><img class="img-fluid" src="assets/img/avatar/gallery9.jpg" alt="Sample Image"></a>
-            </div>
-        </div>
-     </div>
-    </section>
+    </div>
+</section>
+
+
 
     <section class="testimonial-section">
         <div class="testimonial">

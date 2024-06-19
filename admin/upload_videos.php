@@ -21,9 +21,9 @@ include('includes/header.php')
 
         <div class="col-md-6">
             <label for="category" class="form-label">Category:</label>
-            <input type="text" id="category" name="category" class="form-control" required><!-- Or replace input type with select for predefined categories -->
+            <input type="text" id="category" name="category" class="form-control" required>
         </div>
-        <!-- You can add additional inputs here if needed -->
+       
         <div class="col-12">
             <button type="submit" name="submit" class="btn btn-primary">Upload</button>
         </div>
