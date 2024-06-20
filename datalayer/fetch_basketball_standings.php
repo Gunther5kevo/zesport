@@ -111,13 +111,13 @@ try {
 
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         echo "<tr>
-                <td>{$row['position']}</td>
-                <td>{$row['team_name']}</td>
-                <td>{$row['games_played']}</td>
-                <td>{$row['wins']}</td>
-                <td>{$row['losses']}</td>
-                <td>{$row['points_for']}</td>
-                <td>{$row['points_against']}</td>
+                <td>" . htmlspecialchars($row['position']) . "</td>
+                <td>" . htmlspecialchars($row['team_name']) . "</td>
+                <td>" . htmlspecialchars($row['games_played']) . "</td>
+                <td>" . htmlspecialchars($row['wins']) . "</td>
+                <td>" . htmlspecialchars($row['losses']) . "</td>
+                <td>" . htmlspecialchars($row['points_for']) . "</td>
+                <td>" . htmlspecialchars($row['points_against']) . "</td>
                 <td>" . number_format($row['win_percentage'], 3) . "</td>
               </tr>";
     }
@@ -125,6 +125,7 @@ try {
     echo "</table>";
 
 } catch (PDOException $e) {
-    echo 'Database error: ' . $e->getMessage();
+    // Display a user-friendly message and log the error details
+    echo '<h2>An error occurred while fetching the standings. Please try again later.</h2>';
+    error_log('Database error: ' . $e->getMessage());
 }
-

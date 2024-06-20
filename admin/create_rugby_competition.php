@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_competition']))
         $_SESSION['status'] = "Competition created successfully";
 
         
-        header("Location: dashboard.php");
+        header("Location: admin_dashboard.php");
         exit();
 
     } catch (PDOException $e) {
@@ -27,4 +27,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_competition']))
     
     die('<h2>Unauthorized access</h2>');
 }
-?>

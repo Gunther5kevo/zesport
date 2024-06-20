@@ -1,0 +1,126 @@
+/* General styling */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Hero Section */
+.hero-section {
+    background: url('assets/img/hero.jpg') no-repeat center center/cover;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 1.5em;
+}
+
+/* News Section */
+.news-section {
+    padding: 40px 0;
+}
+
+.news-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.news-item:hover {
+    transform: translateY(-5px);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+    height: 150px;
+}
+
+.meta {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.meta .author,
+.meta .date {
+    display: block;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+/* Video Section */
+.video-section {
+    padding: 40px 0;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.video-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+}
+
+.video-header {
+    padding: 10px;
+    background-color: #3a87ad;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+.video-thumbnail {
+    position: relative;
+    padding-top: 56.25%;
+    background-color: #000;
+}
+
+.video-thumbnail video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}

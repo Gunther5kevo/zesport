@@ -6,23 +6,33 @@ try {
     $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 1; // Default to 1 if not provided
     $gender = isset($_GET['gender']) ? $_GET['gender'] : 'male'; // Default to 'male' if not provided
 
-    // Clear the standings table
-    $pdo->exec("TRUNCATE TABLE rugby_standings");
+    // Validate competitionId and gender
+    if ($competitionId <= 0) {
+        die('<h2>Invalid competition ID provided</h2>');
+    }
+
+    if (!in_array($gender, ['male', 'female'])) {
+        die('<h2>Invalid gender provided</h2>');
+    }
+
+    // Clear the standings table for the specific competition
+    $pdo->prepare("DELETE FROM rugby_standings WHERE competition_id = :competition_id")->execute(['competition_id' => $competitionId]);
 
     // Insert the calculated standings into the standings table
     $query = "
-    INSERT INTO rugby_standings (team_id, team_name, games_played, wins, losses, draws, points_for, points_against, points_difference, points)
+    INSERT INTO rugby_standings (competition_id, team_id, team_name, games_played, wins, losses, draws, points_for, points_against, points_difference, points)
     SELECT
+        :competition_id AS competition_id,
         t.id AS team_id,
         t.team_name,
-        COALESCE(games_played, 0) AS games_played,
-        COALESCE(wins, 0) AS wins,
-        COALESCE(losses, 0) AS losses,
-        COALESCE(draws, 0) AS draws,
-        COALESCE(points_for, 0) AS points_for,
-        COALESCE(points_against, 0) AS points_against,
-        COALESCE(points_difference, 0) AS points_difference,
-        COALESCE(points, 0) AS points
+        COALESCE(SUM(games_played), 0) AS games_played,
+        COALESCE(SUM(wins), 0) AS wins,
+        COALESCE(SUM(losses), 0) AS losses,
+        COALESCE(SUM(draws), 0) AS draws,
+        COALESCE(SUM(points_for), 0) AS points_for,
+        COALESCE(SUM(points_against), 0) AS points_against,
+        COALESCE(SUM(points_difference), 0) AS points_difference,
+        COALESCE(SUM(points), 0) AS points
     FROM rugby_teams t
     LEFT JOIN (
         SELECT
@@ -38,7 +48,6 @@ try {
         FROM (
             SELECT 
                 home.id AS team_id,
-                home.team_name AS team_name,
                 1 AS games_played,
                 CASE WHEN fm.home_score > fm.away_score THEN 1 ELSE 0 END AS wins,
                 CASE WHEN fm.home_score < fm.away_score THEN 1 ELSE 0 END AS losses,
@@ -62,7 +71,6 @@ try {
 
             SELECT 
                 away.id AS team_id,
-                away.team_name AS team_name,
                 1 AS games_played,
                 CASE WHEN fm.away_score > fm.home_score THEN 1 ELSE 0 END AS wins,
                 CASE WHEN fm.away_score < fm.home_score THEN 1 ELSE 0 END AS losses,
@@ -84,26 +92,30 @@ try {
         ) AS match_results
         GROUP BY team_id
     ) AS standings ON t.id = standings.team_id
-    WHERE t.competition_id = :competition_id AND t.gender = :gender
+    WHERE t.gender = :gender
+    GROUP BY t.id, t.team_name
     ORDER BY points DESC, points_difference DESC, team_name ASC;
     ";
 
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':competition_id', $competitionId, PDO::PARAM_INT);
-    $stmt->bindParam(':gender', $gender, PDO::PARAM_STR);
-    $stmt->execute();
+    $stmt->execute(['competition_id' => $competitionId, 'gender' => $gender]);
 
     // Fetch and display the standings
-    $result = $pdo->query("
-        SELECT *,
-            CASE 
-                WHEN @prevPoints = points AND @prevDifference = points_difference THEN @curRank 
-                WHEN (@prevPoints := points) IS NOT NULL AND (@prevDifference := points_difference) IS NOT NULL THEN @curRank := @curRank + 1 
-                ELSE @curRank := @curRank + 1 
-            END AS position
-        FROM rugby_standings, (SELECT @curRank := 0, @prevPoints := NULL, @prevDifference := NULL) AS vars
-        ORDER BY points DESC, points_difference DESC, team_name ASC
+    $result = $pdo->prepare("
+        SELECT 
+            team_id, team_name, games_played, wins, losses, draws, points_for, points_against, points_difference, points,
+            @curRank := IF(@prevPoints = points AND @prevDifference = points_difference, @curRank, @curRank + 1) AS position,
+            @prevPoints := points,
+            @prevDifference := points_difference
+        FROM 
+            rugby_standings, 
+            (SELECT @curRank := 0, @prevPoints := NULL, @prevDifference := NULL) AS vars
+        WHERE 
+            competition_id = :competition_id
+        ORDER BY 
+            points DESC, points_difference DESC, team_name ASC
     ");
+    $result->execute(['competition_id' => $competitionId]);
 
     echo "<h2>Rugby Standings</h2>";
     echo "<table>
@@ -136,7 +148,8 @@ try {
     }
 
     echo "</table>";
-} catch (PDOException $e) {
-    echo 'Database error: ' . htmlspecialchars($e->getMessage());
-}
 
+} catch (PDOException $e) {
+    echo '<h2>An error occurred while fetching the standings. Please try again later.</h2>';
+    error_log('Database error: ' . $e->getMessage());
+}

@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_competition']))
         $_SESSION['status'] = "Competition created successfully";
 
         // Redirect to dashboard to prevent form resubmission on page refresh
-        header("Location: dashboard.php");
+        header("Location: admin_dashboard.php");
         exit();
 
     } catch (PDOException $e) {

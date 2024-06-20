@@ -54,4 +54,4 @@ function countTotalPosts($pdo, $category = null) {
     // Fetch the total count
     return $stmt->fetchColumn();
 }
-?>
+
