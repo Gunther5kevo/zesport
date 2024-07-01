@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
+    <link rel="stylesheet" href="assets/css/contact.css">
     <style>
     .sidebar {
         background-color: #f8f9fa;
@@ -45,50 +46,51 @@
 
 <body>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 sidebar">
-                <h2>Leagues an Tournaments</h2>
-                <ul class="nav flex-column" id="competitionList">
-                    <!-- Competition links will be dynamically populated here -->
-                </ul>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-9">
-                <div id="tabs">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="fixtures-tab" data-bs-toggle="tab" href="#fixtures"
-                                role="tab" aria-controls="fixtures" aria-selected="true">Fixtures</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="results-tab" data-bs-toggle="tab" href="#results" role="tab"
-                                aria-controls="results" aria-selected="false">Results</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="standings-tab" data-bs-toggle="tab" href="#standings" role="tab"
-                                aria-controls="standings" aria-selected="false">Standings</a>
-                        </li>
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 sidebar">
+                    <h2>Leagues an Tournaments</h2>
+                    <ul class="nav flex-column" id="competitionList">
+                        <!-- Competition links will be dynamically populated here -->
                     </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="fixtures" role="tabpanel"
-                            aria-labelledby="fixtures-tab">
-                            <!-- Fixture content will be loaded dynamically -->
-                        </div>
-                        <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
-                            <!-- Results content will be loaded dynamically -->
-                        </div>
-                        <div class="tab-pane fade" id="standings" role="tabpanel" aria-labelledby="standings-tab">
-                            <!-- Standings content will be loaded dynamically -->
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-9">
+                    <div id="tabs">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="fixtures-tab" data-bs-toggle="tab" href="#fixtures"
+                                    role="tab" aria-controls="fixtures" aria-selected="true">Fixtures</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="results-tab" data-bs-toggle="tab" href="#results" role="tab"
+                                    aria-controls="results" aria-selected="false">Results</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="standings-tab" data-bs-toggle="tab" href="#standings" role="tab"
+                                    aria-controls="standings" aria-selected="false">Standings</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="fixtures" role="tabpanel"
+                                aria-labelledby="fixtures-tab">
+                                <!-- Fixture content will be loaded dynamically -->
+                            </div>
+                            <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
+                                <!-- Results content will be loaded dynamically -->
+                            </div>
+                            <div class="tab-pane fade" id="standings" role="tabpanel" aria-labelledby="standings-tab">
+                                <!-- Standings content will be loaded dynamically -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </main>
     <!-- Include necessary scripts for Bootstrap and jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -224,7 +226,7 @@
                     } else {
                         try {
                             results = Array.isArray(response) ? response : JSON.parse(
-                            response); // Parse JSON if response is a JSON string
+                                response); // Parse JSON if response is a JSON string
                         } catch (e) {
                             console.error("Parsing error:", e);
                             $('#results').html('<p>Unexpected results format.</p>');
@@ -298,7 +300,9 @@
         fetchCompetitions();
     });
     </script>
-
+<footer>
+    <?php include('footer.php')?>
+</footer>
 </body>
 
 </html>

@@ -1,18 +1,18 @@
 <?php
 include('includes/header.php');
 
+try {
+    // Fetch competitions from the database
+    $sql_competitions = "SELECT id, competition_name FROM competitions ORDER BY competition_name";
+    $stmt_competitions = $pdo->query($sql_competitions);
+    $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch competitions from the database
-$sql_competitions = "SELECT id, competition_name FROM competitions ORDER BY competition_name";
-$stmt_competitions = $pdo->query($sql_competitions);
-$competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
-
-// Fetch teams based on the default gender selection for initial page load
-$gender = 'Male';
-$sql_teams = "SELECT id, team_name FROM teams WHERE gender = :gender ORDER BY team_name";
-$stmt_teams = $pdo->prepare($sql_teams); // Prepare the SQL statement
-$stmt_teams->execute(['gender' => $gender]); // Execute with parameter
-$teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
+    // Fetch teams based on the default gender selection for initial page load
+    $gender = 'Male'; // Replace with your default gender selection logic
+    $sql_teams = "SELECT id, team_name FROM teams WHERE gender = :gender ORDER BY team_name";
+    $stmt_teams = $pdo->prepare($sql_teams);
+    $stmt_teams->execute(['gender' => $gender]);
+    $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="row">
@@ -112,3 +112,9 @@ $(document).ready(function() {
     getTeams(); // Initial call to load teams based on the default gender selection
 });
 </script>
+
+<?php
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+}
+?>

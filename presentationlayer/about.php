@@ -1,6 +1,5 @@
 <?php
-include ('../datalayer/server.php');
-include('../admin/includes/navbar.php')
+include('../admin/includes/headerr.php');
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +13,19 @@ include('../admin/includes/navbar.php')
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-<main></main>
-
+<main>
+    <section class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2 text-center">
+                    <h2>About Us</h2>
+                    <p>Welcome to the sport Department at. We are dedicated to fostering a vibrant sports community that enriches the university experience for students, faculty, and staff alike.</p>
+                    <p>Explore our website to learn more about our sports teams, upcoming events, facilities, and how you can get involved. Join us in celebrating the spirit of sportsmanship and camaraderie at Zetech!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
 </body>
 </html>

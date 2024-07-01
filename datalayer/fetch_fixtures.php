@@ -37,6 +37,16 @@ try {
         if (empty($fixtures)) {
             echo json_encode(['message' => 'No upcoming fixtures found for this competition.']);
         } else {
+            // Format date and time before encoding to JSON
+            foreach ($fixtures as &$fixture) {
+                // Format match_date
+                $match_date = date('jS F Y', strtotime($fixture['match_date']));
+                $fixture['match_date'] = $match_date;
+                
+                
+            }
+            unset($fixture); // unset the reference
+
             echo json_encode($fixtures);
         }
     } else {
@@ -45,3 +55,4 @@ try {
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
+

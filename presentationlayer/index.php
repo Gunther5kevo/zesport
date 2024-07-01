@@ -15,6 +15,7 @@ include('../admin/includes/headerr.php')
     <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Open+Sans:wght@300&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/contact.css">
 </head>
 
 <body>
@@ -72,66 +73,43 @@ include('../admin/includes/headerr.php')
 
 
 
-        <!-- features -->
         <section class="feature-section">
             <div class="container">
-                <?php
-        include('../datalayer/features.php');
-        $features = fetchFeatures($pdo);
-
-        if (!empty($features)) {
-            echo '<div class="row">';
-            foreach ($features as $feature) {
-                echo '<div class="col-md-4">';
-                echo '<div class="card feature-item">';
-                echo '<img src="' . htmlspecialchars($feature['image_url']) . '" class="card-img-top" alt="' . htmlspecialchars($feature['title']) . '">';
-                echo '<div class="card-body">';
-                echo '<h3 class="card-title">' . htmlspecialchars($feature['title']) . '</h3>';
-                echo '<p class="card-text">' . htmlspecialchars($feature['description']) . '</p>';
-                echo '<a href="' . htmlspecialchars($feature['link_url']) . '" class="read-more">Read More</a>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-            }
-            echo '</div>';
-        } else {
-            echo "<p>No features found</p>";
-        }
-        ?>
-            </div>
-        </section>
-
-
-        <!-- <section class="carousel2-section">
-            <div class="carousel-info">
-                <div class="container">
-                    <div id="carousel-info" class="carousel-inner">
-                        <div class="item active">
-                            <div class="content">
-                                <h6>Lorem FC <span>0</span></h6>
-                                <h6>Ipsumdo FC <span>2</span></h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card feature-item">
+                            <img src="assets/img/titans.png" class="card-img-top" alt="Feature 1">
+                            <div class="card-body">
+                                <h3 class="card-title">Zetech Titans</h3>
+                                <p class="card-text">Zetech Clobber UON In Sportpesa Shield Tournament</p>
+                                <a href="feature1.php" class="read-more">Read More</a>
                             </div>
                         </div>
-                         Repeat this structure for each match result -->
-                        <!-- <div class="item">
-                            <div class="content">
-                                <h6>FC Dolor <span>0</span></h6>
-                                <h6>Ipsumdo FC <span>2</span></h6>
-                            </div>
-                        </div>
-                        
                     </div>
-                    
-                    <a class="carousel-control-prev" href="#carousel-info" role="button" data-slide="prev">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-                    <a class="carousel-control-next" href="#carousel-info" role="button" data-slide="next">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
+                    <div class="col-md-4">
+                        <div class="card feature-item">
+                            <img src="assets/img/feature2.png" class="card-img-top" alt="Feature 2">
+                            <div class="card-body">
+                                <h3 class="card-title">KUSA</h3>
+                                <p class="card-text">A winning weekend!</p>
+                                <a href="feature2.php" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card feature-item">
+                            <img src="assets/img/avatar/spark.jpg" class="card-img-top" alt="Feature 3">
+                            <div class="card-body">
+                                <h3 class="card-title">Champions</h3>
+                                <p class="card-text">Zetech Sparks are the new basketball champions of the Eliud Owalo
+                                    Foundation Elite Tournament.</p>
+                                <a href="feature3.php" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
-         --> 
 
         <section class="video-section">
             <div class="container">
@@ -153,7 +131,7 @@ include('../admin/includes/headerr.php')
                                     </div>
                                     <div class="video-thumbnail">
                                         <a
-                                            href="news.php?video_url=football_video_1.mp4&video_title=Football Video Title 1&video_description=Short description of football video 1.">
+                                            href="videos.php?video_url=football_video_1.mp4&video_title=Football Video Title 1&video_description=Short description of football video 1.">
                                             <img src="assets/videos/Snapinsta.app_video_10000000_1616873835747587_7128927841519552347_n.png"
                                                 alt="Football Video Title 1">
                                             <i class="play-icon fas fa-play-circle"></i>
@@ -180,7 +158,7 @@ include('../admin/includes/headerr.php')
                                     </div>
                                     <div class="video-thumbnail">
                                         <a
-                                            href="news.php?video_url=basketball_video_1.mp4&video_title=Basketball Video Title 1&video_description=Short description of basketball video 1.">
+                                            href="videos.php?video_url=basketball_video_1.mp4&video_title=Basketball Video Title 1&video_description=Short description of basketball video 1.">
                                             <img src="assets/videos/Snapinsta.app_video_B640673080DE5DCB4536559DF0E52E8D_video_dashinit.png"
                                                 alt="Basketball Video Title 1">
                                             <i class="play-icon fas fa-play-circle"></i>
@@ -207,7 +185,7 @@ include('../admin/includes/headerr.php')
                                     </div>
                                     <div class="video-thumbnail">
                                         <a
-                                            href="news.php?video_url=rugby_video_1.mp4&video_title=Rugby Video Title 1&video_description=Short description of rugby video 1.">
+                                            href="videos.php?video_url=rugby_video_1.mp4&video_title=Rugby Video Title 1&video_description=Short description of rugby video 1.">
                                             <img src="assets/videos/Snapinsta.app_video_438966095_466569592499138_8280443329152143839_n.png"
                                                 alt="Rugby Video Title 1">
                                             <i class="play-icon fas fa-play-circle"></i>
@@ -265,6 +243,7 @@ include('../admin/includes/headerr.php')
     <footer>
         <?php include('./footer.php'); ?>
     </footer>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">

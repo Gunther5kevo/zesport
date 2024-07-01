@@ -1,57 +1,76 @@
 <?php
-function fetchBlogPosts($pdo, $category = null, $limit = 6, $page = 1) {
-    // Calculate the offset based on the page and limit
-    $offset = ($page - 1) * $limit;
 
-    // Build the SQL query to fetch posts
-    $query = "SELECT * FROM news_posts";
+// Function to fetch blog posts with pagination
+function fetchBlogPosts($pdo, $category, $perPage, $page) {
+    try {
+        $offset = ($page - 1) * $perPage;
+        $sql = "SELECT * FROM news_posts";
+        if (!empty($category)) {
+            $sql .= " WHERE category = :category";
+        }
+        $sql .= " ORDER BY date DESC LIMIT :perPage OFFSET :offset";
 
-    // If a category is specified, add a WHERE clause to filter by category
-    if ($category) {
-        $query .= " WHERE category = :category";
+        $stmt = $pdo->prepare($sql);
+        if (!empty($category)) {
+            $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+        }
+        $stmt->bindParam(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error fetching posts: " . $e->getMessage();
+        return [];
     }
-
-    // Add LIMIT and OFFSET clauses for pagination
-    $query .= " LIMIT :limit OFFSET :offset";
-
-    // Prepare the SQL statement
-    $stmt = $pdo->prepare($query);
-
-    // Bind parameters
-    if ($category) {
-        $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-    }
-    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-
-    // Execute the query
-    $stmt->execute();
-
-    // Fetch all rows as associative arrays
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function countTotalPosts($pdo, $category = null) {
-    // Build the SQL query to count total posts
-    $query = "SELECT COUNT(*) FROM news_posts";
+// Function to count total posts
+function countTotalPosts($pdo, $category) {
+    try {
+        $sql = "SELECT COUNT(*) AS total FROM news_posts";
+        if (!empty($category)) {
+            $sql .= " WHERE category = :category";
+        }
 
-    // If a category is specified, add a WHERE clause to filter by category
-    if ($category) {
-        $query .= " WHERE category = :category";
+        $stmt = $pdo->prepare($sql);
+        if (!empty($category)) {
+            $stmt->bindParam(':category', $category, PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    } catch (PDOException $e) {
+        echo "Error counting total posts: " . $e->getMessage();
+        return 0;
     }
-
-    // Prepare the SQL statement
-    $stmt = $pdo->prepare($query);
-
-    // Bind parameters
-    if ($category) {
-        $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-    }
-
-    // Execute the query
-    $stmt->execute();
-
-    // Fetch the total count
-    return $stmt->fetchColumn();
 }
+
+// Ensure that the id parameter is present in the URL
+if (!isset($_GET['page'])) {
+    $page = 1;
+} else {
+    $page = max(1, intval($_GET['page']));
+}
+
+$category = isset($_GET['category']) ? $_GET['category'] : null;
+$perPage = 5; // Number of posts per page
+
+$posts = fetchBlogPosts($pdo, $category, $perPage, $page);
+$totalPosts = countTotalPosts($pdo, $category);
+$totalPages = ceil($totalPosts / $perPage);
+
+
+
+function fetchPopularPosts($pdo) {
+    try {
+        // Prepare SQL statement to fetch popular posts based on views
+        $stmt = $pdo->query("SELECT * FROM news_posts ORDER BY views DESC LIMIT 5");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        
+        echo "Error: " . $e->getMessage();
+        return []; 
+    }
+}
+
 
