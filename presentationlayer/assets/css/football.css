@@ -35,13 +35,39 @@ th, td {
     text-align: center;
 }
 
-#custom-navbar {
+#title {
+    /* background-color: blue; */
+    color: #fff; 
+    padding: 5px; 
+    padding-top: 10px;
+    text-align: center; 
+}
+
+#title .title_row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    background-color: rgba(116, 117, 146, 0.8); 
-    color: white;
-    padding: 10px 20px;
+}
+
+#title h1 {
+    font-size: 3em; 
+    margin: 0; 
+    animation: flicker 2s infinite; /* Example animation */
+}
+
+/* Example animation keyframes */
+@keyframes flicker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+#title img {
+    height: 60px; /* Adjust height as needed */
+    width: auto; /* Maintain aspect ratio */
 }
 
 .navbar-logo img {
@@ -76,6 +102,8 @@ th, td {
 .navbar-links .active {
     color: #fff; 
 }
+
+
 
 .container {
     padding-top: 20px;

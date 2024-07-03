@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basketball - ZeSport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
     <link rel="stylesheet" href="assets/css/contact.css">
@@ -46,6 +49,18 @@
 
 <body>
     <main>
+        <section id="title" class="turquoise">
+            <div class="container">
+                <div class="title_row">
+                    <div class="pull-right">
+                        <h1 class="animate-flicker4 animated pulse">
+                        <img src="assets/img/basketball-logo.png" alt="Basketball Logo"> Basketball
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <div class="container-fluid">
             <div class="row">
@@ -57,7 +72,7 @@
                     </ul>
                 </div>
 
-                <!-- Main Content -->
+
                 <div class="col-md-9">
                     <div id="tabs">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">

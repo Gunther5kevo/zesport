@@ -13,8 +13,8 @@ body {
 
 /* Hero Section */
 .hero-section {
-    background: url('assets/img/hero.jpg') no-repeat center center/cover;
-    color: #8d3838;
+    background: url('../img/hero.png') no-repeat center center/cover;
+    color: #9b1b1b;
     padding: 100px 0;
     text-align: center;
 }
@@ -75,6 +75,26 @@ body {
 /* Pagination */
 .pagination {
     margin-top: 20px;
+}
+
+.pagination .page-link {
+    color: #007bff !important;
+    text-decoration: none !important;
+    border: 1px solid #ddd !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    transition: background-color 0.3s, color 0.3s !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff !important;
+    color: #fff !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: #fff !important;
 }
 
 /* Sidebar */
@@ -161,15 +181,3 @@ body {
         height: 220px; /* Adjust for smaller screens */
     }
 }
-
-/* Footer */
-/* footer {
-    background-color: #343a40;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-}
-
-footer p {
-    margin-bottom: 0;
-} */

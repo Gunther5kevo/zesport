@@ -4,7 +4,7 @@
 function fetchBlogPosts($pdo, $category, $perPage, $page) {
     try {
         $offset = ($page - 1) * $perPage;
-        $sql = "SELECT * FROM news_posts";
+        $sql = "SELECT id, title FROM news_posts";
         if (!empty($category)) {
             $sql .= " WHERE category = :category";
         }
@@ -21,6 +21,19 @@ function fetchBlogPosts($pdo, $category, $perPage, $page) {
     } catch (PDOException $e) {
         echo "Error fetching posts: " . $e->getMessage();
         return [];
+    }
+}
+
+// Function to fetch a single blog post by ID
+function fetchSingleBlogPost($pdo, $id) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM news_posts WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error fetching post: " . $e->getMessage();
+        return null;
     }
 }
 
@@ -44,21 +57,6 @@ function countTotalPosts($pdo, $category) {
         return 0;
     }
 }
-
-// Ensure that the id parameter is present in the URL
-if (!isset($_GET['page'])) {
-    $page = 1;
-} else {
-    $page = max(1, intval($_GET['page']));
-}
-
-$category = isset($_GET['category']) ? $_GET['category'] : null;
-$perPage = 5; // Number of posts per page
-
-$posts = fetchBlogPosts($pdo, $category, $perPage, $page);
-$totalPosts = countTotalPosts($pdo, $category);
-$totalPages = ceil($totalPosts / $perPage);
-
 
 
 function fetchPopularPosts($pdo) {

@@ -222,22 +222,24 @@ include('../admin/includes/headerr.php')
             </div>
         </section>
 
-
-
-        <section class="testimonial-section">
+        <div class="testimonial-section">
             <div class="testimonial">
-                <img src="assets/img/avatar/profile1.jpg" alt="User 1">
-                <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus
-                    error sit voluptatem accusantium doloremque laudantium."</p>
-                <span class="user-name">John Doe</span>
+                <img src="assets/img/avatar/profile1.jpg" alt="Testimonial User" class="testimonial-img">
+                <blockquote class="testimonial-text">
+                    "Great website! I always find the latest football news and updates here."
+                    <cite>Grace</cite>
+                </blockquote>
             </div>
             <div class="testimonial">
-                <img src="assets/img/avatar/profile2.jpg" alt="User 2">
-                <p>"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur
-                    magni dolores eos qui ratione voluptatem."</p>
-                <span class="user-name">Jane Smith</span>
+                <img src="assets/img/avatar/profile2.jpg" alt="Testimonial User 2" class="testimonial-img">
+                <blockquote class="testimonial-text">
+                    "The match highlights section is fantastic. I can catch up on games I missed."
+                    <cite>Kim</cite>
+                </blockquote>
             </div>
-        </section>
+        </div>
+
+
 
     </main>
     <footer>
