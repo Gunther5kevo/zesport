@@ -73,7 +73,7 @@ $teams = $stmt_teams->fetchAll(PDO::FETCH_ASSOC);
                         <input type="text" id="referee" name="referee" class="form-control">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" name="create_fixture">Create Fixture</button>
+                <button type="submit" class="btn btn-primary" name="create_rugby_fixture">Create Fixture</button>
             </form>
         </div>
     </div>

@@ -24,6 +24,7 @@ CREATE TABLE basketball_matches (
     home_score INT NOT NULL,
     away_score INT NOT NULL,
     venue VARCHAR(255),
+    gender VARCHAR(10) NOT NULL,
     competition_id INT NOT NULL,
     FOREIGN KEY (home_team_id) REFERENCES basketball_teams(id),
     FOREIGN KEY (away_team_id) REFERENCES basketball_teams(id),
@@ -71,6 +72,7 @@ CREATE TABLE football_matches (
     home_score INT,
     away_score INT,
     venue VARCHAR(255),
+    gender VARCHAR(10) NOT NULL,
     competition_id INT NOT NULL,
     FOREIGN KEY (home_team_id) REFERENCES teams(id),
     FOREIGN KEY (away_team_id) REFERENCES teams(id),
@@ -109,11 +111,16 @@ CREATE TABLE rugby_matches (
     home_score INT,
     away_score INT,
     match_date DATE,
+    match_time TIME,
     competition_id INT,
+    venue VARCHAR(255),
+    gender VARCHAR(10) NOT NULL,
+    referee VARCHAR(100),
     FOREIGN KEY (home_team_id) REFERENCES rugby_teams(id),
     FOREIGN KEY (away_team_id) REFERENCES rugby_teams(id),
     FOREIGN KEY (competition_id) REFERENCES rugby_competitions(id)
 );
+
 
 -- Create rugby_standings table
 CREATE TABLE rugby_standings (
