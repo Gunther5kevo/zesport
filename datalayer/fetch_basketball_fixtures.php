@@ -56,6 +56,18 @@ try {
         if (empty($upcoming_fixtures)) {
             echo json_encode(['message' => 'No upcoming fixtures found for this competition.']);
         } else {
+            // Format date and time before encoding to JSON
+            foreach ($upcoming_fixtures as &$fixture) {
+                // Format match_date
+                $match_date = date('jS F Y', strtotime($fixture['match_date']));
+                $fixture['match_date'] = $match_date;
+
+                // Format match_time
+                $match_time = date('g.iA', strtotime($fixture['match_time']));
+                $fixture['match_time'] = $match_time;
+            }
+            unset($fixture); // Unset the reference
+
             echo json_encode($upcoming_fixtures);
         }
 

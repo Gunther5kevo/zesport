@@ -1,5 +1,5 @@
 <?php
-include('server.php'); 
+include('server.php'); // Include your database connection file
 
 header('Content-Type: application/json'); // Ensure the response is JSON
 
@@ -42,10 +42,12 @@ try {
                 // Format match_date
                 $match_date = date('jS F Y', strtotime($fixture['match_date']));
                 $fixture['match_date'] = $match_date;
-                
-                
+
+                // Format match_time
+                $match_time = date('g.iA', strtotime($fixture['match_time']));
+                $fixture['match_time'] = $match_time;
             }
-            unset($fixture); // unset the reference
+            unset($fixture); // Unset the reference
 
             echo json_encode($fixtures);
         }

@@ -7,7 +7,7 @@ include('includes/header.php')
 <div class="video-upload">
     <?= alertMessage();?>
     <h3>Upload New Video</h3>
-    <form method="POST" enctype="multipart/form-data" class="row g-3">
+    <form method="POST" enctype="multipart/form-data" class="row g-3" action="admin_functions.php">
         <div class="col-md-6">
             <label for="title" class="form-label">Title:</label>
             <input type="text" id="title" name="title" class="form-control" required>
@@ -25,33 +25,15 @@ include('includes/header.php')
         </div>
        
         <div class="col-12">
-            <button type="submit" name="submit" class="btn btn-primary">Upload</button>
+            <button type="submit" name="upload_video" class="btn btn-primary">Upload</button>
         </div>
     </form>
 </div>
 
 
 <h3>Delete Video</h3>
-<div class="video-gallery row">
-    <?php
-    include('../datalayer/video-section.php');
-    $sql = "SELECT id, title, thumbnail FROM videos";
-    $stmt = $pdo->query($sql);
 
-    // Fetch videos as an associative array
-    $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    foreach ($videos as $video) {
-        echo '<div class="col-md-4">';
-        echo '<div class="video-item">';
-        echo '<img src="' . $video['thumbnail'] . '" class="img-fluid" alt="' . $video['title'] . '">';
-        echo '<p>' . $video['title'] . '</p>';
-        echo '<a href="delete_video.php?id=' . $video['id'] . '" class="btn btn-danger">Delete</a>';
-        echo '</div>';
-        echo '</div>';
-    }
-    ?>
-</div>
+
 
 
 

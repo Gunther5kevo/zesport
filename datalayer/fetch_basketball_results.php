@@ -50,6 +50,12 @@ try {
         if (empty($past_results)) {
             echo json_encode(['message' => 'No past results found for this competition.']);
         } else {
+            // Format the match_date
+            foreach ($past_results as &$result) {
+                $date = new DateTime($result['match_date']);
+                $result['match_date'] = $date->format('jS F Y'); 
+            }
+
             echo json_encode($past_results);
         }
 

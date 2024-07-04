@@ -11,7 +11,7 @@ require '../vendor/autoload.php';
 use FFMpeg\FFMpeg;
 use FFMpeg\Coordinate\TimeCode;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_video'])) {
     if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
         $videoName = $_FILES['video']['name'];
         $videoTmp = $_FILES['video']['tmp_name'];
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         $category = isset($_POST['category']) ? $_POST['category'] : '';
 
         $videoDirectory = '../presentationlayer/assets/videos/';
-        $thumbnailDirectory = '../presentationlayer/assets/thumbnails/';
+        $thumbnailDirectory = '../presentationlayer/assets/videos/';
 
         $videoPath = $videoDirectory . uniqid() . '_' . $videoName;
         $thumbnailPath = $thumbnailDirectory . uniqid() . '_' . pathinfo($videoName, PATHINFO_FILENAME) . '.png';

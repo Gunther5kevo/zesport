@@ -42,6 +42,12 @@ try {
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Format the match_date
+    foreach ($results as &$result) {
+        $date = new DateTime($result['match_date']);
+        $result['match_date'] = $date->format('jS F Y'); // Formats date as "6th June 2024"
+    }
+
     // Return results as JSON
     header('Content-Type: application/json');
     echo json_encode($results);
