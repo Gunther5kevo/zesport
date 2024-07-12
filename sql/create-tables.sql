@@ -165,3 +165,7 @@ CREATE TABLE IF NOT EXISTS `videos` (
   `thumbnail` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+> CREATE TABLE seasons (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     season VARCHAR(255) NOT NULL
+    -> );

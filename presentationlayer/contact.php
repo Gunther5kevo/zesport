@@ -67,7 +67,7 @@
                             <textarea class="form-control" id="message" rows="3" name="message" required></textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-lg" id="button" disabled>Submit</button>
+                            <button type="submit" class="btn btn-lg" id="button" >Submit</button>
                         </div>
                     </form>
                 </div>

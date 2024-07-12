@@ -8,9 +8,7 @@
     <title>Football Fixtures - ZeSport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
     <link rel="stylesheet" href="assets/css/contact.css">
@@ -47,30 +45,33 @@
         background-color: #74759280;
     }
     </style>
+</head>
 
-
+<body>
+    
 
     <main>
-
         <section id="title" class="turquoise">
             <div class="container">
                 <div class="title_row">
                     <div class="pull-right">
                         <h1 class="animate-flicker4 animated pulse">
-                        <img src="assets/img/football-logo.png" alt="Football Logo"> Football
+                            <img src="assets/img/football-logo.png" alt="Football Logo"> Football
                         </h1>
                     </div>
                 </div>
             </div>
         </section>
 
-
-
-
         <div class="container-fluid">
             <div class="row">
-                <!-- Sidebar -->
+                <!-- Season Filter -->
                 <div class="col-md-3 sidebar">
+                    <h2>Seasons</h2>
+                    <select class="form-select mb-3" id="seasonFilter">
+                        <!-- Season options will be dynamically populated here -->
+                    </select>
+
                     <h2>Leagues and Tournaments</h2>
                     <ul class="nav flex-column" id="competitionList">
                         <!-- Competition links will be dynamically populated here -->
@@ -110,42 +111,68 @@
                 </div>
             </div>
         </div>
-
     </main>
 
-
     <!-- Include necessary scripts for Bootstrap and jQuery -->
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
     $(document).ready(function() {
-        function fetchCompetitions() {
+        // Function to fetch seasons
+        function fetchSeasons() {
+            $.ajax({
+                type: 'GET',
+                url: '../datalayer/fetch_seasons.php',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.error) {
+                        console.error('Error fetching seasons:', response.error);
+                        return;
+                    }
+
+                    var seasons = response;
+                    var seasonOptions = '';
+                    seasons.forEach(function(season) {
+                        seasonOptions += '<option value="' + season.id + '">' + season
+                            .season + '</option>';
+                    });
+                    $('#seasonFilter').html(seasonOptions);
+
+                    // Attach change event listener to season filter
+                    $('#seasonFilter').change(function() {
+                        var selectedSeason = $(this).val();
+                        fetchCompetitions(
+                            selectedSeason); // Call fetchCompetitions with selected season
+                    });
+
+                    // Load competitions for the default season on page load
+                    var defaultSeason = $('#seasonFilter').val();
+                    fetchCompetitions(defaultSeason);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching seasons:', error);
+                }
+            });
+        }
+
+        // Function to fetch competitions based on season
+        function fetchCompetitions(seasonId) {
             $.ajax({
                 type: 'GET',
                 url: '../datalayer/fetch_competitions.php',
+                data: {
+                    season: seasonId // Pass seasonId as 'season' parameter
+                },
+                dataType: 'json',
                 success: function(response) {
-                    // console.log('Response:', response);  
-
-                    var competitions;
-                    if (typeof response === "object") {
-                        competitions = response;
-                    } else {
-                        try {
-                            competitions = JSON.parse(response);
-                        } catch (e) {
-                            console.error("Parsing error:", e);
-                            return;
-                        }
+                    if (response.error) {
+                        console.error('Error fetching competitions:', response.error);
+                        return;
                     }
 
                     var sidebarHtml = '';
-                    competitions.forEach(function(competition) {
+                    response.forEach(function(competition) {
                         sidebarHtml += '<li class="nav-item">';
                         sidebarHtml +=
                             '<a class="nav-link competition-link" data-competition-id="' +
@@ -153,6 +180,7 @@
                             '</a>';
                         sidebarHtml += '</li>';
                     });
+
                     $('#competitionList').html(sidebarHtml);
 
                     // Attach click event listener to competition links
@@ -168,9 +196,9 @@
                     });
 
                     // Load details for the first competition by default
-                    if (competitions.length > 0) {
+                    if (response.length > 0) {
                         $('.competition-link').first().addClass('active');
-                        loadCompetitionDetails(competitions[0].id);
+                        loadCompetitionDetails(response[0].id);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -179,119 +207,107 @@
             });
         }
 
+        // Function to load competition details (fixtures, results, standings)
         function loadCompetitionDetails(competitionId) {
             // Clear existing content
             $('#fixtures').empty();
             $('#results').empty();
             $('#standings').empty();
-
-            // Load fixtures
             $.ajax({
                 type: 'GET',
                 url: '../datalayer/fetch_fixtures.php',
                 data: {
                     competition_id: competitionId
                 },
+                dataType: 'json', // Ensure dataType is set to 'json'
                 success: function(response) {
-                    // console.log('Fixtures Response:', response); 
-                    var fixtures;
-                    if (typeof response === "object") {
-                        fixtures = response;
-                    } else {
-                        try {
-                            fixtures = JSON.parse(response);
-                        } catch (e) {
-                            console.error("Parsing error:", e);
+                    try {
+                        if (response.error) {
+                            console.error('Error fetching fixtures:', response.error);
+                            $('#fixtures').html('<p>Error fetching fixtures: ' + response.error +
+                                '</p>');
                             return;
                         }
-                    }
 
-                    if (fixtures.message) {
-                        $('#fixtures').html('<p>' + fixtures.message + '</p>');
-                    } else {
-                        var fixturesHtml = '<table class="table table-striped">';
-                        fixturesHtml +=
-                            '<thead><tr><th>Date</th><th>Time</th><th>Home Team</th><th>Away Team</th><th>Venue</th><th>Referee</th></tr></thead>';
-                        fixturesHtml += '<tbody>';
+                        if (response.message) {
+                            // No fixtures message
+                            $('#fixtures').html('<p>' + response.message + '</p>');
+                        } else {
+                            // Create table HTML
+                            var tableHtml =
+                                '<table class="table table-bordered"><thead><tr><th>Date</th><th>Time</th><th>Home Team</th><th>Away Team</th><th>Venue</th><th>Referee</th></tr></thead><tbody>';
 
-                        fixtures.forEach(function(fixture) {
-                            fixturesHtml += '<tr>';
-                            fixturesHtml += '<td>' + fixture.match_date + '</td>';
-                            fixturesHtml += '<td>' + fixture.match_time + '</td>';
-                            fixturesHtml += '<td>' + fixture.home_team + '</td>';
-                            fixturesHtml += '<td>' + fixture.away_team + '</td>';
-                            fixturesHtml += '<td>' + fixture.venue + '</td>';
-                            fixturesHtml += '<td>' + fixture.referee + '</td>';
-                            fixturesHtml += '</tr>';
-                        });
+                            // Populate table rows with fixture data
+                            response.forEach(function(fixture) {
+                                tableHtml += '<tr><td>' + fixture.match_date + '</td><td>' +
+                                    fixture.match_time + '</td><td>' + fixture.home_team +
+                                    '</td><td>' + fixture.away_team + '</td><td>' + fixture
+                                    .venue + '</td><td>' + fixture.referee + '</td></tr>';
+                            });
 
-                        fixturesHtml += '</tbody></table>';
-                        $('#fixtures').html(fixturesHtml);
+                            tableHtml += '</tbody></table>';
+                            $('#fixtures').html(tableHtml);
+                        }
+                    } catch (error) {
+                        console.error('Error handling response:', error);
+                        $('#fixtures').html(
+                            '<p>Error handling response. Please try again later.</p>');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error fetching fixtures:', error);
+                    console.error('AJAX Error:', error);
+                    $('#fixtures').html('<p>Error fetching fixtures. Please try again later.</p>');
                 }
             });
 
-            // Load results
+            // Fetch results
             $.ajax({
                 type: 'GET',
                 url: '../datalayer/fetch_results.php',
                 data: {
                     competition_id: competitionId
                 },
+                dataType: 'json',
                 success: function(response) {
-                    // console.log('Results Response:', response); 
-                    var results;
-                    if (typeof response === "object") {
-                        results = response;
-                    } else {
-                        try {
-                            results = JSON.parse(response);
-                        } catch (e) {
-                            console.error("Parsing error:", e);
-                            return;
+                    try {
+                        // Process response and update #results element
+                        if (response.error) {
+                            console.error('Error fetching results:', response.error);
+                            $('#results').html('<p>Error fetching results: ' + response.error +
+                                '</p>');
+                        } else if (response.length > 0) {
+                            var resultsHtml = '<table class="table table-striped">';
+                            resultsHtml +=
+                                '<thead><tr><th>Date</th><th>Home Team</th><th>Away Team</th><th>Score</th></tr></thead>';
+                            resultsHtml += '<tbody>';
+                            response.forEach(function(result) {
+                                resultsHtml += '<tr>';
+                                resultsHtml += '<td>' + result.match_date + '</td>';
+                                resultsHtml += '<td>' + result.home_team + '</td>';
+                                resultsHtml += '<td>' + result.away_team + '</td>';
+                                resultsHtml += '<td>' + (result.home_score !== null ? result
+                                    .home_score : '-') + ' - ' + (result.away_score !==
+                                    null ? result.away_score : '-') + '</td>';
+                                resultsHtml += '</tr>';
+                            });
+                            resultsHtml += '</tbody></table>';
+                            $('#results').html(resultsHtml);
+                        } else {
+                            $('#results').html('<p>No results found for this competition.</p>');
                         }
-                    }
-
-                    if (results.length === 0) {
-                        $('#results').html('<p>No recent results found for this competition.</p>');
-                    } else {
-                        var resultsHtml = '<table class="table table-striped">';
-                        resultsHtml +=
-                            '<thead><tr><th>Date</th><th>Home Team</th><th>Away Team</th><th>Score</th></tr></thead>';
-                        resultsHtml += '<tbody>';
-
-                        results.forEach(function(result) {
-                            var homeTeam = result.home_team;
-                            var awayTeam = result.away_team;
-                            var homeScore = result.home_score !== null ? result.home_score :
-                                '-';
-                            var awayScore = result.away_score !== null ? result.away_score :
-                                '-';
-                            var score = (homeScore !== '-' && awayScore !== '-') ?
-                                homeScore +
-                                ' - ' + awayScore : '-';
-
-                            resultsHtml += '<tr>';
-                            resultsHtml += '<td>' + result.match_date + '</td>';
-                            resultsHtml += '<td>' + homeTeam + '</td>';
-                            resultsHtml += '<td>' + awayTeam + '</td>';
-                            resultsHtml += '<td>' + score + '</td>';
-                            resultsHtml += '</tr>';
-                        });
-
-                        resultsHtml += '</tbody></table>';
-                        $('#results').html(resultsHtml);
+                    } catch (error) {
+                        console.error('Error handling response:', error);
+                        $('#results').html(
+                            '<p>Error handling response. Please try again later.</p>');
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error fetching results:', error);
+                    $('#results').html('<p>Error fetching results. Please try again later.</p>');
                 }
             });
 
-
+            // Fetch standings
             $.ajax({
                 type: 'GET',
                 url: '../datalayer/fetch_standings.php',
@@ -308,12 +324,13 @@
             });
         }
 
-        fetchCompetitions();
+
+        // Initialize the page
+        fetchSeasons();
     });
     </script>
-    <footer>
-        <?php include('footer.php')?>
-    </footer>
-    </body>
+
+    <?php include('footer.php'); ?>
+</body>
 
 </html>

@@ -11,53 +11,97 @@ require '../vendor/autoload.php';
 use FFMpeg\FFMpeg;
 use FFMpeg\Coordinate\TimeCode;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_video'])) {
-    if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
-        $videoName = $_FILES['video']['name'];
-        $videoTmp = $_FILES['video']['tmp_name'];
-        $title = isset($_POST['title']) ? $_POST['title'] : '';
-        $category = isset($_POST['category']) ? $_POST['category'] : '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['upload_video'])) {
+        // Handle video upload
+        if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
+            $videoName = $_FILES['video']['name'];
+            $videoTmp = $_FILES['video']['tmp_name'];
+            $title = isset($_POST['title']) ? $_POST['title'] : '';
+            $category = isset($_POST['category']) ? $_POST['category'] : '';
 
-        $videoDirectory = '../presentationlayer/assets/videos/';
-        $thumbnailDirectory = '../presentationlayer/assets/videos/';
+            $videoDirectory = '../presentationlayer/assets/videos/';
+            $thumbnailDirectory = '../presentationlayer/assets/videos/';
 
-        $videoPath = $videoDirectory . uniqid() . '_' . $videoName;
-        $thumbnailPath = $thumbnailDirectory . uniqid() . '_' . pathinfo($videoName, PATHINFO_FILENAME) . '.png';
+            $videoPath = $videoDirectory . uniqid() . '_' . $videoName;
+            $thumbnailPath = $thumbnailDirectory . uniqid() . '_' . pathinfo($videoName, PATHINFO_FILENAME) . '.png';
 
-        if (move_uploaded_file($videoTmp, $videoPath)) {
-            $ffmpeg = FFMpeg::create([
-                'ffmpeg.binaries'  => 'C:\ProgramData\chocolatey\bin\ffmpeg.exe', 
-                'ffprobe.binaries' => 'C:\ProgramData\chocolatey\bin\ffprobe.exe',
-            ]);
+            if (move_uploaded_file($videoTmp, $videoPath)) {
+                $ffmpeg = FFMpeg::create([
+                    'ffmpeg.binaries'  => 'C:\ProgramData\chocolatey\bin\ffmpeg.exe', 
+                    'ffprobe.binaries' => 'C:\ProgramData\chocolatey\bin\ffprobe.exe',
+                ]);
 
-            $video = $ffmpeg->open($videoPath);
-            $video->frame(TimeCode::fromSeconds(10))->save($thumbnailPath);
+                $video = $ffmpeg->open($videoPath);
+                $video->frame(TimeCode::fromSeconds(10))->save($thumbnailPath);
 
-            $query = "INSERT INTO videos (title, url, thumbnail, category, upload_date) VALUES (:title, :url, :thumbnail, :category, NOW())";
-            $stmt = $pdo->prepare($query);
-            $stmt->bindParam(':title', $title);
-            $stmt->bindParam(':url', $videoPath);
-            $stmt->bindParam(':thumbnail', $thumbnailPath);
-            $stmt->bindParam(':category', $category);
+                $query = "INSERT INTO videos (title, url, thumbnail, category, upload_date) VALUES (:title, :url, :thumbnail, :category, NOW())";
+                $stmt = $pdo->prepare($query);
+                $stmt->bindParam(':title', $title);
+                $stmt->bindParam(':url', $videoPath);
+                $stmt->bindParam(':thumbnail', $thumbnailPath);
+                $stmt->bindParam(':category', $category);
 
-            if ($stmt->execute()) {
-                $_SESSION['status'] = "Video uploaded successfully.";
-                header('Location: upload_videos.php');
-                exit();
+                if ($stmt->execute()) {
+                    $_SESSION['status'] = "Video uploaded successfully.";
+                    header('Location: upload_videos.php');
+                    exit();
+                } else {
+                    $_SESSION['status'] = "Error inserting video details into database.";
+                    header('Location: upload_videos.php');
+                    exit();
+                }
             } else {
-                $_SESSION['status'] = "Error inserting video details into database.";
+                $_SESSION['status'] = "Error moving uploaded video to destination directory.";
                 header('Location: upload_videos.php');
                 exit();
             }
         } else {
-            $_SESSION['status'] = "Error moving uploaded video to destination directory.";
+            $_SESSION['status'] = "Error uploading video.";
             header('Location: upload_videos.php');
             exit();
         }
-    } else {
-        $_SESSION['status'] = "Error uploading video.";
-        header('Location: upload_videos.php');
-        exit();
+    } elseif (isset($_POST['delete_video'])) {
+        // Handle video deletion
+        $video_id = $_POST['video_id'];
+
+        // Fetch the video details
+        $query = "SELECT url, thumbnail FROM videos WHERE id = :id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':id', $video_id);
+        $stmt->execute();
+        $video = $stmt->fetch();
+
+        if ($video) {
+            $videoPath = $video['url'];
+            $thumbnailPath = $video['thumbnail'];
+
+            // Delete the file from the server
+            if (file_exists($videoPath)) {
+                unlink($videoPath);
+            }
+            if (file_exists($thumbnailPath)) {
+                unlink($thumbnailPath);
+            }
+
+            // Delete the video record from the database
+            $query = "DELETE FROM videos WHERE id = :id";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $video_id);
+            if ($stmt->execute()) {
+                $_SESSION['status'] = "Video deleted successfully.";
+                header('Location: upload_videos.php');
+                exit();
+            } else {
+                $_SESSION['status'] = "Error deleting video from database.";
+                header('Location: upload_videos.php');
+                exit();
+            }
+        } else {
+            $_SESSION['status'] = "Video not found.";
+            header('Location: upload_videos.php');
+            exit();
+        }
     }
 }
 
@@ -441,6 +485,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["create_basketball_team
 
 
 //img upload
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_image'])) {
     $title = htmlspecialchars($_POST['title']);
     $description = htmlspecialchars($_POST['description']);
@@ -475,7 +520,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_image'])) {
 
     // Try to upload the file
     if (!isset($_SESSION['status']) && move_uploaded_file($image['tmp_name'], $targetFile)) {
-        
         $image_url = $targetFile; // Relative path from the project root
         $stmt = $pdo->prepare("INSERT INTO features (title, description, image_url) VALUES (?, ?, ?)");
         if ($stmt->execute([$title, $description, $image_url])) {
@@ -486,10 +530,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_image'])) {
     } elseif (!isset($_SESSION['status'])) {
         $_SESSION['status'] = "Sorry, there was an error uploading your file.";
     }
-    
-    header("Location: admin_dashboard.php");
+
+    header("Location: upload_img.php");
     exit();
 }
+
+// Image Delete Code
+if (isset($_POST['delete_image'])) {
+    $imageId = $_POST['image_id'];
+    $stmt = $pdo->prepare("SELECT image_url FROM features WHERE id = ?");
+    $stmt->execute([$imageId]);
+    $image = $stmt->fetch();
+
+    if ($image) {
+        $imagePath = $image['image_url'];
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+        $stmt = $pdo->prepare("DELETE FROM features WHERE id = ?");
+        if ($stmt->execute([$imageId])) {
+            $_SESSION['status'] = "Image deleted successfully.";
+        } else {
+            $_SESSION['status'] = "Failed to delete the image from the database.";
+        }
+    } else {
+        $_SESSION['status'] = "Image not found.";
+    }
+
+    header("Location: upload_img.php");
+    exit();
+}
+
+
 
 
 //Adding and Editing users

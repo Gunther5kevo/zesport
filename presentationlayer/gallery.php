@@ -1,6 +1,10 @@
 <?php
 include ('../datalayer/server.php');
 include('../admin/includes/headerr.php');
+
+// Fetch images from the database
+$stmt = $pdo->query("SELECT title, image_url FROM features");
+$uploadedImages = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +30,7 @@ include('../admin/includes/headerr.php');
                     <div class="underline"></div>
                 </div>
                 <div class="row">
+                    <!-- Static Images -->
                     <div class="col-md-4">
                         <a href="assets/img/avatar/gallery1.jpg" data-lightbox="gallery"><img class="img-fluid" src="assets/img/avatar/gallery1.jpg" alt="Sample Image"></a>
                     </div>
@@ -53,6 +58,15 @@ include('../admin/includes/headerr.php');
                     <div class="col-md-4">
                         <a href="assets/img/avatar/gallery9.jpg" data-lightbox="gallery"><img class="img-fluid" src="assets/img/avatar/gallery9.jpg" alt="Sample Image"></a>
                     </div>
+
+                    <!-- Dynamic Uploaded Images -->
+                    <?php foreach ($uploadedImages as $image): ?>
+                        <div class="col-md-4">
+                            <a href="<?= htmlspecialchars($image['image_url']); ?>" data-lightbox="gallery">
+                                <img class="img-fluid" src="<?= htmlspecialchars($image['image_url']); ?>" alt="<?= htmlspecialchars($image['title']); ?>">
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </section>

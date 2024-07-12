@@ -111,7 +111,12 @@ function getAll($pdo, $tableName) {
 
 
 
+
+
 function generateCompetitionForm($sport, $formAction) {
+    // Include server.php for database connection and functions
+    include('../datalayer/server.php');
+    
     // Determine gender options based on sport
     if ($sport === 'football') {
         $genderOptions = '
@@ -127,7 +132,21 @@ function generateCompetitionForm($sport, $formAction) {
         // Handle any other sport or invalid input gracefully
         die('Invalid sport type');
     }
-
+    
+    try {
+        // Fetch seasons from the database
+        $seasonQuery = "SELECT id, season FROM seasons ORDER BY season";
+        $stmtSeason = $pdo->query($seasonQuery);
+        $seasonOptions = '';
+        
+        while ($row = $stmtSeason->fetch(PDO::FETCH_ASSOC)) {
+            $seasonOptions .= '<option value="' . $row['id'] . '">' . htmlspecialchars($row['season']) . '</option>';
+        }
+    } catch (PDOException $e) {
+        // Handle database error
+        die('Database error: ' . $e->getMessage());
+    }
+    
     // Generate the form HTML
     echo '
         <div class="row">
@@ -141,10 +160,17 @@ function generateCompetitionForm($sport, $formAction) {
                                 <label for="competition" class="form-label">Competition Name:</label>
                                 <input type="text" id="competition" name="competition" class="form-control" required>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="gender" class="form-label">Gender:</label>
                                 <select id="gender" name="gender" class="form-select" required>
                                     ' . $genderOptions . '
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="season" class="form-label">Season:</label>
+                                <select id="season" name="season" class="form-select" required>
+                                    <option value="">Select Season</option>
+                                    ' . $seasonOptions . '
                                 </select>
                             </div>
                         </div>
@@ -155,6 +181,9 @@ function generateCompetitionForm($sport, $formAction) {
         </div>
     ';
 }
-?>
+
+
+
+
 
 

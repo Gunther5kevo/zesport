@@ -129,8 +129,8 @@ try {
     }
 
     echo "</tbody></table>";
+    
 
 } catch (PDOException $e) {
     die("Database error: " . htmlspecialchars($e->getMessage()));
 }
-

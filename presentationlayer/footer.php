@@ -10,10 +10,13 @@
             <a href="https://www.zetech.ac.ke/" target="_blank">Zetech University</a>
         </p>
         <p>
-            <a href="https://ocs.zetech.ac.ke/" target="_blank">Office of Career Services</a>
+            <a href="football.php" target="_blank">Football</a>
         </p>
         <p>
-            <a href="https://research.zetech.ac.ke/" target="_blank">Directorate of Research</a>
+            <a href="basketball.php" target="_blank">Basketball</a>
+        </p>
+        <p>
+            <a href="rugby.php" target="_blank">Rugby</a>
         </p>
         <p>
             <a href="contact.php">Contact Form</a>
@@ -43,6 +46,6 @@
         <a href="#">Privacy Policy</a> | <a href="#">Site Map</a>
     </div>
     <div class="copy">
-        Copyright © 2023 Zetech University Alumni. All Rights Reserved
+        Copyright © 2024 Zesports. All Rights Reserved
     </div>
 </div>

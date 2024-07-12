@@ -44,7 +44,7 @@ try {
                 $fixture['match_date'] = $match_date;
 
                 // Format match_time
-                $match_time = date('g.iA', strtotime($fixture['match_time']));
+                $match_time = date('g:iA', strtotime($fixture['match_time'])); // Corrected format
                 $fixture['match_time'] = $match_time;
             }
             unset($fixture); // Unset the reference

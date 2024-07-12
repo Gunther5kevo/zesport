@@ -59,10 +59,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark custom-navbar sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="../presentationlayer/assets/img/zetechlogo.png" alt="Zetech University"
+                <img src="../presentationlayer/assets/img/zetechlogo.png" alt="Zetech University "
                     style="max-width: 20%; height: auto;" class="d-inline-block align-top">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

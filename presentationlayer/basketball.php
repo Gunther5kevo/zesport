@@ -8,7 +8,7 @@
     <title>Basketball - ZeSport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/football.css">
@@ -54,7 +54,7 @@
                 <div class="title_row">
                     <div class="pull-right">
                         <h1 class="animate-flicker4 animated pulse">
-                        <img src="assets/img/basketball-logo.png" alt="Basketball Logo"> Basketball
+                            <img src="assets/img/basketball-logo.png" alt="Basketball Logo"> Basketball
                         </h1>
                     </div>
                 </div>
@@ -64,9 +64,14 @@
 
         <div class="container-fluid">
             <div class="row">
-                <!-- Sidebar -->
+                <!-- Season Filter -->
                 <div class="col-md-3 sidebar">
-                    <h2>Leagues an Tournaments</h2>
+                    <h2>Seasons</h2>
+                    <select class="form-select mb-3" id="seasonFilter">
+                        <!-- Season options will be dynamically populated here -->
+                    </select>
+
+                    <h2>Leagues and Tournaments</h2>
                     <ul class="nav flex-column" id="competitionList">
                         <!-- Competition links will be dynamically populated here -->
                     </ul>
@@ -114,27 +119,58 @@
 
     <script>
     $(document).ready(function() {
-        function fetchCompetitions() {
+        function fetchSeasons() {
             $.ajax({
                 type: 'GET',
-                url: '../datalayer/fetch_basketball_competitions.php', // Path to your PHP script fetching competitions
+                url: '../datalayer/fetch_seasons.php',
+                dataType: 'json',
                 success: function(response) {
-                    // console.log('Competitions Response:', response); 
+                    if (response.error) {
+                        console.error('Error fetching seasons:', response.error);
+                        return;
+                    }
 
-                    var competitions;
-                    if (typeof response === "object") {
-                        competitions = response;
-                    } else {
-                        try {
-                            competitions = JSON.parse(response);
-                        } catch (e) {
-                            console.error("Parsing error:", e);
-                            return;
-                        }
+                    var seasons = response;
+                    var seasonOptions = '';
+                    seasons.forEach(function(season) {
+                        seasonOptions += '<option value="' + season.id + '">' + season
+                            .season + '</option>';
+                    });
+                    $('#seasonFilter').html(seasonOptions);
+
+                    // Attach change event listener to season filter
+                    $('#seasonFilter').change(function() {
+                        var selectedSeason = $(this).val();
+                        fetchCompetitions(
+                            selectedSeason); // Call fetchCompetitions with selected season
+                    });
+
+                    // Load competitions for the default season on page load
+                    var defaultSeason = $('#seasonFilter').val();
+                    fetchCompetitions(defaultSeason);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching seasons:', error);
+                }
+            });
+        }
+
+        function fetchCompetitions(seasonId) {
+            $.ajax({
+                type: 'GET',
+                url: '../datalayer/fetch_basketball_competitions.php',
+                data: {
+                    season: seasonId // Pass seasonId as 'season' parameter
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.error) {
+                        console.error('Error fetching competitions:', response.error);
+                        return;
                     }
 
                     var sidebarHtml = '';
-                    competitions.forEach(function(competition) {
+                    response.forEach(function(competition) {
                         sidebarHtml += '<li class="nav-item">';
                         sidebarHtml +=
                             '<a class="nav-link competition-link" data-competition-id="' +
@@ -142,6 +178,7 @@
                             '</a>';
                         sidebarHtml += '</li>';
                     });
+
                     $('#competitionList').html(sidebarHtml);
 
                     // Attach click event listener to competition links
@@ -157,9 +194,9 @@
                     });
 
                     // Load details for the first competition by default
-                    if (competitions.length > 0) {
+                    if (response.length > 0) {
                         $('.competition-link').first().addClass('active');
-                        loadCompetitionDetails(competitions[0].id);
+                        loadCompetitionDetails(response[0].id);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -182,7 +219,7 @@
                     competition_id: competitionId
                 },
                 success: function(response) {
-                    console.log('Fixtures Response:', response); // Debugging: Log the response
+                    // console.log('Fixtures Response:', response); 
                     var fixtures;
                     if (typeof response === "object") {
                         fixtures = response;
@@ -231,8 +268,8 @@
                     competition_id: competitionId
                 },
                 success: function(response) {
-                    console.log('Results Response:', response); // Uncomment for debugging if needed
-                    var results;
+                    // console.log('Results Response:', response); 
+                    // var results;
 
                     // Check if response is already an object or needs parsing
                     if (typeof response === "object" && response.hasOwnProperty('message')) {
@@ -312,7 +349,7 @@
             });
         }
 
-        fetchCompetitions();
+        fetchSeasons();
     });
     </script>
     <footer>
