@@ -1,10 +1,10 @@
 <?php
-// Include your database connection file (e.g., server.php)
 include('server.php');
 
 try {
-    // Determine the competition ID from the request or default to 1
+    // Determine the competition ID and season ID from the request or default to 1
     $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 1;
+    $seasonId = isset($_GET['season_id']) ? (int)$_GET['season_id'] : 1;
 
     // Fetch competition details including gender
     $sql_competition = "SELECT id, competition_name, gender FROM competitions WHERE id = :competition_id";
@@ -19,18 +19,19 @@ try {
     // Determine gender to fetch standings based on competition gender
     $gender = $competition['gender'];
 
-    // Delete previous standings for the selected competition
-    $delete_query = "DELETE FROM standings WHERE competition_id = :competition_id";
+    // Delete previous standings for the selected competition and season
+    $delete_query = "DELETE FROM standings WHERE competition_id = :competition_id AND season_id = :season_id";
     $stmt_delete = $pdo->prepare($delete_query);
-    $stmt_delete->execute(['competition_id' => $competitionId]);
+    $stmt_delete->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     // Insert the calculated standings into the standings table
     $insert_query = "
-    INSERT INTO standings (team_id, team_name, competition_id, played, won, drawn, lost, goals_for, goals_against, goal_difference, points)
+    INSERT INTO standings (team_id, team_name, competition_id, season_id, played, won, drawn, lost, goals_for, goals_against, goal_difference, points)
     SELECT
         teams.id AS team_id,
         teams.team_name AS team_name,
         :competition_id AS competition_id,
+        :season_id AS season_id,
         COUNT(fm.id) AS played,
         SUM(CASE WHEN (teams.id = fm.home_team_id AND fm.home_score > fm.away_score) OR (teams.id = fm.away_team_id AND fm.away_score > fm.home_score) THEN 1 ELSE 0 END) AS won,
         SUM(CASE WHEN fm.home_score = fm.away_score THEN 1 ELSE 0 END) AS drawn,
@@ -46,6 +47,7 @@ try {
     WHERE 
         teams.gender = :gender AND
         fm.competition_id = :competition_id AND
+        fm.season_id = :season_id AND
         fm.home_score IS NOT NULL AND fm.away_score IS NOT NULL
     GROUP BY 
         teams.id, teams.team_name
@@ -54,7 +56,7 @@ try {
     ";
 
     $stmt_insert = $pdo->prepare($insert_query);
-    $stmt_insert->execute(['competition_id' => $competitionId, 'gender' => $gender]);
+    $stmt_insert->execute(['competition_id' => $competitionId, 'season_id' => $seasonId, 'gender' => $gender]);
 
     // Fetch all teams and their standings
     $select_query = "
@@ -71,7 +73,7 @@ try {
     FROM 
         teams
     LEFT JOIN 
-        standings ON teams.id = standings.team_id AND standings.competition_id = :competition_id
+        standings ON teams.id = standings.team_id AND standings.competition_id = :competition_id AND standings.season_id = :season_id
     WHERE 
         teams.gender = :gender
     ORDER BY 
@@ -82,7 +84,7 @@ try {
     ";
 
     $stmt_select = $pdo->prepare($select_query);
-    $stmt_select->execute(['competition_id' => $competitionId, 'gender' => $gender]);
+    $stmt_select->execute(['competition_id' => $competitionId, 'season_id' => $seasonId, 'gender' => $gender]);
     $standings = $stmt_select->fetchAll(PDO::FETCH_ASSOC);
 
     // Initialize variables for position calculation
@@ -129,8 +131,8 @@ try {
     }
 
     echo "</tbody></table>";
-    
 
 } catch (PDOException $e) {
     die("Database error: " . htmlspecialchars($e->getMessage()));
 }
+

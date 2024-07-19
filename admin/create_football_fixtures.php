@@ -7,6 +7,11 @@ try {
     $stmt_competitions = $pdo->query($sql_competitions);
     $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
 
+    // Fetch seasons from the database
+    $sql_seasons = "SELECT id, season FROM seasons ORDER BY season DESC";
+    $stmt_seasons = $pdo->query($sql_seasons);
+    $seasons = $stmt_seasons->fetchAll(PDO::FETCH_ASSOC);
+
     // Fetch teams based on the default gender selection for initial page load
     $gender = 'Male'; // Replace with your default gender selection logic
     $sql_teams = "SELECT id, team_name FROM teams WHERE gender = :gender ORDER BY team_name";
@@ -27,6 +32,15 @@ try {
                         <select id="gender" name="gender" class="form-control">
                             <option value="Male" <?= $gender === 'Male' ? 'selected' : '' ?>>Male</option>
                             <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="season">Season:</label>
+                        <select id="season" name="season" class="form-control" required>
+                            <option value="" selected>No season</option>
+                            <?php foreach ($seasons as $season): ?>
+                                <option value="<?= htmlspecialchars($season['id']) ?>"><?= htmlspecialchars($season['season']) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">

@@ -107,23 +107,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 // Football fixture
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
     $match_date = $_POST['match_date'];
-    $match_time = $_POST['match_time']; 
+    $match_time = $_POST['match_time'];
     $home_team = $_POST['home_team'];
     $away_team = $_POST['away_team'];
     $venue = $_POST['venue'];
     $referee = $_POST['referee'];
     $competition_id = $_POST['competition'];
-    
-    $gender = $_POST['gender']; 
+    $season_id = $_POST['season']; // Get season_id from the form
+    $gender = $_POST['gender'];
 
     try {
-        $sql = "INSERT INTO football_matches (match_date, match_time, home_team_id, away_team_id, competition_id, venue, referee, gender)
-                VALUES (:match_date, :match_time, :home_team, :away_team, :competition_id,:venue, :referee, :gender)";
+        $sql = "INSERT INTO football_matches (match_date, match_time, home_team_id, away_team_id, competition_id, season_id, venue, referee, gender)
+                VALUES (:match_date, :match_time, :home_team, :away_team, :competition_id, :season_id, :venue, :referee, :gender)";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
@@ -132,10 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_fixture'])) {
             'home_team' => $home_team,
             'away_team' => $away_team,
             'competition_id' => $competition_id,
-            
+            'season_id' => $season_id, // Bind the season_id parameter
             'venue' => $venue,
             'referee' => $referee,
-            'gender' => $gender // Bind the gender parameter
+            'gender' => $gender
         ]);
 
         // Set success message

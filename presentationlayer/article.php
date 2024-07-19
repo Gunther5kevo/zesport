@@ -66,7 +66,7 @@ if (!$article) {
     <meta name="author" content="ZEsport">
 </head>
 <body>
-<?php include('header.php'); ?>
+
 
 <main>
     <div class="container">

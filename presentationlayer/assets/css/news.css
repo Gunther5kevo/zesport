@@ -14,7 +14,7 @@ body {
 /* Hero Section */
 .hero-section {
     background: url('../img/hero.png') no-repeat center center/cover;
-    color: #9b1b1b;
+    color: #4D2913;
     padding: 100px 0;
     text-align: center;
 }
@@ -55,8 +55,16 @@ body {
 }
 
 .news-item .card-title {
-    font-size: 1.8em;
+    font-size: 1.2em;
     margin-bottom: 10px;
+}
+
+.news-item .thumbnail {
+    max-width: 150px; /* Adjust the size as needed */
+    height: auto;
+    object-fit: cover;
+    margin-right: 15px; /* Spacing between image and text */
+    float: left; /* Align image to the left of the text */
 }
 
 .news-item .meta {
@@ -125,7 +133,7 @@ body {
 
 .social-links a {
     text-decoration: none;
-    color: #333;
+    color: #4D2913;
     transition: color 0.3s;
 }
 

@@ -21,7 +21,7 @@
                 foreach ($popularPosts as $post) :
                 ?>
                 <li><a
-                        href="article.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a>
+                        href="post.php?id=<?php echo $post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a>
                 </li>
                 <?php endforeach; ?>
             </ul>

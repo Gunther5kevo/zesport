@@ -41,7 +41,7 @@ if (!$post) {
 </head>
 
 <body>
-    <?php include('header.php'); ?>
+  
 
     <main>
         <div class="container">
@@ -58,6 +58,7 @@ if (!$post) {
                             <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
                             <!-- You can add other details like author, date, etc. -->
                         </div>
+                        
                     </div>
                 </div>
 

@@ -1,27 +1,23 @@
 <?php
 
 // Function to fetch blog posts with pagination
-function fetchBlogPosts($pdo, $category, $perPage, $page) {
-    try {
-        $offset = ($page - 1) * $perPage;
-        $sql = "SELECT id, title FROM news_posts";
-        if (!empty($category)) {
-            $sql .= " WHERE category = :category";
-        }
-        $sql .= " ORDER BY date DESC LIMIT :perPage OFFSET :offset";
-
-        $stmt = $pdo->prepare($sql);
-        if (!empty($category)) {
-            $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-        }
-        $stmt->bindParam(':perPage', $perPage, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        echo "Error fetching posts: " . $e->getMessage();
-        return [];
+function fetchBlogPosts($pdo, $category = null, $perPage, $page) {
+    $offset = ($page - 1) * $perPage;
+    $sql = "SELECT id, title, image FROM news_posts"; // Assuming your table name is `blog_posts`
+    if ($category) {
+        $sql .= " WHERE category = :category";
     }
+    $sql .= " LIMIT :perPage OFFSET :offset";
+
+    $stmt = $pdo->prepare($sql);
+    if ($category) {
+        $stmt->bindValue(':category', $category);
+    }
+    $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Function to fetch a single blog post by ID

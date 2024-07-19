@@ -24,8 +24,7 @@ $totalPages = ceil($totalPosts / $perPage);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEsport - News</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Open+Sans:wght@300&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Open+Sans:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/news.css">
     <link rel="stylesheet" href="assets/css/contact.css">
     <meta name="description" content="Latest sports news and highlights from various competitions.">
@@ -37,11 +36,18 @@ $totalPages = ceil($totalPosts / $perPage);
         height: auto;
         object-fit: cover;
     }
+    .thumbnail {
+        max-width: 50px; /* Adjust the size as needed */
+        height: auto;
+        margin-right: 10px;
+        object-fit: cover;
+        display: inline-block;
+        vertical-align: middle;
+    }
     </style>
 </head>
 
 <body>
-    <?php include('header.php'); ?>
 
     <main>
         <section class="hero-section">
@@ -59,8 +65,7 @@ $totalPages = ceil($totalPosts / $perPage);
                         <?php if ($postId && $post): ?>
                             <div class="news-item card">
                                 <?php if (!empty($post['image'])) : ?>
-                                <img src="../presentationlayer/assets/img/avatar/<?php echo htmlspecialchars($post['image']); ?>"
-                                    alt="News Image" class="card-img-top">
+                                <img src="../presentationlayer/assets/img/avatar/<?php echo htmlspecialchars($post['image']); ?>" alt="News Image" class="card-img-top">
                                 <?php endif; ?>
                                 <div class="card-body">
                                     <h2 class="card-title"><?php echo htmlspecialchars($post['title']); ?></h2>
@@ -73,6 +78,9 @@ $totalPages = ceil($totalPosts / $perPage);
                             <div class="news-item card">
                                 <div class="card-body">
                                     <h2 class="card-title">
+                                        <?php if (!empty($post['image'])) : ?>
+                                            <img src="../presentationlayer/assets/img/avatar/<?php echo htmlspecialchars($post['image']); ?>" alt="News Image" class="thumbnail">
+                                        <?php endif; ?>
                                         <a href="news.php?id=<?php echo htmlspecialchars($post['id']); ?>">
                                             <?php echo htmlspecialchars($post['title']); ?>
                                         </a>
@@ -86,8 +94,7 @@ $totalPages = ceil($totalPosts / $perPage);
                             <ul class="pagination justify-content-center">
                                 <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
                                 <li class="page-item <?php echo ($i === $page) ? 'active' : ''; ?>">
-                                    <a class="page-link"
-                                        href="?category=<?php echo urlencode($category); ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                    <a class="page-link" href="?category=<?php echo urlencode($category); ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                 </li>
                                 <?php endfor; ?>
                             </ul>

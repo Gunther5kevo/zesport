@@ -48,7 +48,7 @@
 </head>
 
 <body>
-    
+
 
     <main>
         <section id="title" class="turquoise">
@@ -143,7 +143,7 @@
                     $('#seasonFilter').change(function() {
                         var selectedSeason = $(this).val();
                         fetchCompetitions(
-                            selectedSeason); // Call fetchCompetitions with selected season
+                        selectedSeason); // Call fetchCompetitions with selected season
                     });
 
                     // Load competitions for the default season on page load
@@ -209,17 +209,22 @@
 
         // Function to load competition details (fixtures, results, standings)
         function loadCompetitionDetails(competitionId) {
+            var seasonId = $('#seasonFilter').val(); // Get the selected season ID
+
             // Clear existing content
             $('#fixtures').empty();
             $('#results').empty();
             $('#standings').empty();
+
+            // Fetch fixtures
             $.ajax({
                 type: 'GET',
                 url: '../datalayer/fetch_fixtures.php',
                 data: {
-                    competition_id: competitionId
+                    competition_id: competitionId,
+                    season_id: seasonId // Pass seasonId to fetch fixtures for the selected season
                 },
-                dataType: 'json', // Ensure dataType is set to 'json'
+                dataType: 'json',
                 success: function(response) {
                     try {
                         if (response.error) {
@@ -230,21 +235,16 @@
                         }
 
                         if (response.message) {
-                            // No fixtures message
                             $('#fixtures').html('<p>' + response.message + '</p>');
                         } else {
-                            // Create table HTML
                             var tableHtml =
                                 '<table class="table table-bordered"><thead><tr><th>Date</th><th>Time</th><th>Home Team</th><th>Away Team</th><th>Venue</th><th>Referee</th></tr></thead><tbody>';
-
-                            // Populate table rows with fixture data
                             response.forEach(function(fixture) {
                                 tableHtml += '<tr><td>' + fixture.match_date + '</td><td>' +
                                     fixture.match_time + '</td><td>' + fixture.home_team +
                                     '</td><td>' + fixture.away_team + '</td><td>' + fixture
                                     .venue + '</td><td>' + fixture.referee + '</td></tr>';
                             });
-
                             tableHtml += '</tbody></table>';
                             $('#fixtures').html(tableHtml);
                         }
@@ -255,7 +255,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
+                    console.error('AJAX Error:', status, error);
                     $('#fixtures').html('<p>Error fetching fixtures. Please try again later.</p>');
                 }
             });
@@ -265,12 +265,12 @@
                 type: 'GET',
                 url: '../datalayer/fetch_results.php',
                 data: {
-                    competition_id: competitionId
+                    competition_id: competitionId,
+                    season_id: seasonId // Pass seasonId to fetch results for the selected season
                 },
                 dataType: 'json',
                 success: function(response) {
                     try {
-                        // Process response and update #results element
                         if (response.error) {
                             console.error('Error fetching results:', response.error);
                             $('#results').html('<p>Error fetching results: ' + response.error +
@@ -278,8 +278,7 @@
                         } else if (response.length > 0) {
                             var resultsHtml = '<table class="table table-striped">';
                             resultsHtml +=
-                                '<thead><tr><th>Date</th><th>Home Team</th><th>Away Team</th><th>Score</th></tr></thead>';
-                            resultsHtml += '<tbody>';
+                                '<thead><tr><th>Date</th><th>Home Team</th><th>Away Team</th><th>Score</th></tr></thead><tbody>';
                             response.forEach(function(result) {
                                 resultsHtml += '<tr>';
                                 resultsHtml += '<td>' + result.match_date + '</td>';
@@ -312,18 +311,19 @@
                 type: 'GET',
                 url: '../datalayer/fetch_standings.php',
                 data: {
-                    competition_id: competitionId
+                    competition_id: competitionId,
+                    season_id: seasonId // Pass seasonId to fetch standings for the selected season
                 },
                 success: function(response) {
-                    // console.log('Standings Response:', response); 
                     $('#standings').html(response); // Update standings tab content
                 },
                 error: function(xhr, status, error) {
                     console.error('Error fetching standings:', error);
+                    $('#standings').html(
+                    '<p>Error fetching standings. Please try again later.</p>');
                 }
             });
         }
-
 
         // Initialize the page
         fetchSeasons();

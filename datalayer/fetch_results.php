@@ -2,8 +2,9 @@
 include('server.php');
 
 try {
-    // Check if a competition ID is provided
+    // Check if competition ID and season ID are provided
     $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 1; // Default to competition ID 1 if not provided
+    $seasonId = isset($_GET['season_id']) ? (int)$_GET['season_id'] : 1; // Default to season ID 1 if not provided
 
     // Fetch competition name
     $sql_competition = "SELECT competition_name, gender FROM competitions WHERE id = :competition_id";
@@ -14,7 +15,7 @@ try {
     // Determine the gender to fetch match results based on competition gender
     $gender = $competition['gender'] === 'male' ? 'male' : 'male';
 
-    // Fetch match results for the selected competition and gender
+    // Fetch match results for the selected competition, season, and gender
     $sql = "
         SELECT 
             fm.match_date,
@@ -31,6 +32,7 @@ try {
         WHERE 
             fm.match_date <= CURDATE() AND 
             fm.competition_id = :competition_id AND 
+            fm.season_id = :season_id AND 
             fm.home_score IS NOT NULL AND 
             fm.away_score IS NOT NULL
         ORDER BY 
@@ -39,6 +41,7 @@ try {
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':competition_id', $competitionId, PDO::PARAM_INT);
+    $stmt->bindParam(':season_id', $seasonId, PDO::PARAM_INT);
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
