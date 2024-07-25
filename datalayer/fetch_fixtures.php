@@ -47,7 +47,7 @@ try {
                 $fixture['match_date'] = $match_date;
 
                 // Format match_time
-                $match_time = date('g:iA', strtotime($fixture['match_time'])); // Corrected format
+                $match_time = date('g:iA', strtotime($fixture['match_time']));
                 $fixture['match_time'] = $match_time;
             }
             unset($fixture); // Unset the reference
@@ -61,3 +61,4 @@ try {
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
+

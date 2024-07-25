@@ -19,12 +19,7 @@ try {
     // Determine gender to fetch standings based on competition gender
     $gender = $competition['gender'];
 
-    // Delete previous standings for the selected competition and season
-    $delete_query = "DELETE FROM standings WHERE competition_id = :competition_id AND season_id = :season_id";
-    $stmt_delete = $pdo->prepare($delete_query);
-    $stmt_delete->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
-
-    // Insert the calculated standings into the standings table
+    // Insert or update the calculated standings into the standings table
     $insert_query = "
     INSERT INTO standings (team_id, team_name, competition_id, season_id, played, won, drawn, lost, goals_for, goals_against, goal_difference, points)
     SELECT
@@ -51,8 +46,15 @@ try {
         fm.home_score IS NOT NULL AND fm.away_score IS NOT NULL
     GROUP BY 
         teams.id, teams.team_name
-    ORDER BY 
-        points DESC, goal_difference DESC, goals_for DESC, teams.team_name ASC
+    ON DUPLICATE KEY UPDATE
+        played = VALUES(played),
+        won = VALUES(won),
+        drawn = VALUES(drawn),
+        lost = VALUES(lost),
+        goals_for = VALUES(goals_for),
+        goals_against = VALUES(goals_against),
+        goal_difference = VALUES(goal_difference),
+        points = VALUES(points)
     ";
 
     $stmt_insert = $pdo->prepare($insert_query);
@@ -135,4 +137,3 @@ try {
 } catch (PDOException $e) {
     die("Database error: " . htmlspecialchars($e->getMessage()));
 }
-

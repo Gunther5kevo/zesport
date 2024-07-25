@@ -1,59 +1,54 @@
 <?php
 include('server.php');
 
+header('Content-Type: application/json');
+
 try {
     // Check if competition ID and season ID are provided
-    $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 1; // Default to competition ID 1 if not provided
-    $seasonId = isset($_GET['season_id']) ? (int)$_GET['season_id'] : 1; // Default to season ID 1 if not provided
+    if (isset($_GET['competition_id']) && isset($_GET['season_id'])) {
+        $competitionId = $_GET['competition_id'];
+        $seasonId = $_GET['season_id'];
 
-    // Fetch competition name
-    $sql_competition = "SELECT competition_name, gender FROM competitions WHERE id = :competition_id";
-    $stmt_competition = $pdo->prepare($sql_competition);
-    $stmt_competition->execute(['competition_id' => $competitionId]);
-    $competition = $stmt_competition->fetch(PDO::FETCH_ASSOC);
+        // Fetch match results for the selected competition and season
+        $sql = "
+            SELECT 
+                fm.match_date,
+                home.team_name AS home_team,
+                away.team_name AS away_team,
+                fm.home_score,
+                fm.away_score
+            FROM 
+                football_matches fm
+            INNER JOIN 
+                teams home ON fm.home_team_id = home.id
+            INNER JOIN 
+                teams away ON fm.away_team_id = away.id
+            WHERE 
+                fm.match_date <= CURDATE() AND 
+                fm.competition_id = :competition_id AND 
+                fm.season_id = :season_id AND 
+                fm.home_score IS NOT NULL AND 
+                fm.away_score IS NOT NULL
+            ORDER BY 
+                fm.match_date DESC
+        ";
 
-    // Determine the gender to fetch match results based on competition gender
-    $gender = $competition['gender'] === 'male' ? 'male' : 'male';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch match results for the selected competition, season, and gender
-    $sql = "
-        SELECT 
-            fm.match_date,
-            home.team_name AS home_team,
-            away.team_name AS away_team,
-            fm.home_score,
-            fm.away_score
-        FROM 
-            football_matches fm
-        INNER JOIN 
-            teams home ON fm.home_team_id = home.id
-        INNER JOIN 
-            teams away ON fm.away_team_id = away.id
-        WHERE 
-            fm.match_date <= CURDATE() AND 
-            fm.competition_id = :competition_id AND 
-            fm.season_id = :season_id AND 
-            fm.home_score IS NOT NULL AND 
-            fm.away_score IS NOT NULL
-        ORDER BY 
-            fm.match_date DESC
-    ";
+        // Format the match_date
+        foreach ($results as &$result) {
+            $date = new DateTime($result['match_date']);
+            $result['match_date'] = $date->format('jS F Y');
+        }
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':competition_id', $competitionId, PDO::PARAM_INT);
-    $stmt->bindParam(':season_id', $seasonId, PDO::PARAM_INT);
-    $stmt->execute();
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Format the match_date
-    foreach ($results as &$result) {
-        $date = new DateTime($result['match_date']);
-        $result['match_date'] = $date->format('jS F Y'); // Formats date as "6th June 2024"
+        echo json_encode($results);
+    } else {
+        // Handle case where competition_id or season_id are not provided
+        echo json_encode(['error' => 'Both competition ID and season ID are required.']);
     }
-
-    // Return results as JSON
-    header('Content-Type: application/json');
-    echo json_encode($results);
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
+

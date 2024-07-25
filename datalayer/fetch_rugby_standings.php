@@ -2,11 +2,12 @@
 include('../datalayer/server.php');
 
 try {
-    // Get competition_id and gender from the query parameters
+    // Get competition_id, gender, and season_id from the query parameters
     $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 1; // Default to 1 if not provided
     $gender = isset($_GET['gender']) ? $_GET['gender'] : 'male'; // Default to 'male' if not provided
+    $seasonId = isset($_GET['season_id']) ? (int)$_GET['season_id'] : 1; // Default to 1 if not provided
 
-    // Validate competitionId and gender
+    // Validate competitionId, gender, and seasonId
     if ($competitionId <= 0) {
         die('<h2>Invalid competition ID provided</h2>');
     }
@@ -15,14 +16,19 @@ try {
         die('<h2>Invalid gender provided</h2>');
     }
 
-    // Clear the standings table for the specific competition
-    $pdo->prepare("DELETE FROM rugby_standings WHERE competition_id = :competition_id")->execute(['competition_id' => $competitionId]);
+    if ($seasonId <= 0) {
+        die('<h2>Invalid season ID provided</h2>');
+    }
+
+    // Clear the standings table for the specific competition and season
+    $pdo->prepare("DELETE FROM rugby_standings WHERE competition_id = :competition_id AND season_id = :season_id")->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     // Insert the calculated standings into the standings table
     $query = "
-    INSERT INTO rugby_standings (competition_id, team_id, team_name, games_played, wins, losses, draws, points_for, points_against, points_difference, points)
+    INSERT INTO rugby_standings (competition_id, season_id, team_id, team_name, games_played, wins, losses, draws, points_for, points_against, points_difference, points)
     SELECT
         :competition_id AS competition_id,
+        :season_id AS season_id,
         t.id AS team_id,
         t.team_name,
         COALESCE(SUM(games_played), 0) AS games_played,
@@ -65,7 +71,7 @@ try {
             INNER JOIN 
                 rugby_teams home ON fm.home_team_id = home.id
             WHERE 
-                fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND home.gender = :gender AND fm.home_score IS NOT NULL AND fm.away_score IS NOT NULL
+                fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND home.gender = :gender AND fm.season_id = :season_id AND fm.home_score IS NOT NULL AND fm.away_score IS NOT NULL
 
             UNION ALL
 
@@ -88,7 +94,7 @@ try {
             INNER JOIN 
                 rugby_teams away ON fm.away_team_id = away.id
             WHERE 
-                fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND away.gender = :gender AND fm.home_score IS NOT NULL AND fm.away_score IS NOT NULL
+                fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND away.gender = :gender AND fm.season_id = :season_id AND fm.home_score IS NOT NULL AND fm.away_score IS NOT NULL
         ) AS match_results
         GROUP BY team_id
     ) AS standings ON t.id = standings.team_id
@@ -98,7 +104,7 @@ try {
     ";
 
     $stmt = $pdo->prepare($query);
-    $stmt->execute(['competition_id' => $competitionId, 'gender' => $gender]);
+    $stmt->execute(['competition_id' => $competitionId, 'season_id' => $seasonId, 'gender' => $gender]);
 
     // Fetch and display the standings
     $result = $pdo->prepare("
@@ -111,11 +117,11 @@ try {
             rugby_standings, 
             (SELECT @curRank := 0, @prevPoints := NULL, @prevDifference := NULL) AS vars
         WHERE 
-            competition_id = :competition_id
+            competition_id = :competition_id AND season_id = :season_id
         ORDER BY 
             points DESC, points_difference DESC, team_name ASC
     ");
-    $result->execute(['competition_id' => $competitionId]);
+    $result->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     echo "<h2>Rugby Standings</h2>";
     echo "<table>

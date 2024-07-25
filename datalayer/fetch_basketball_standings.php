@@ -2,11 +2,12 @@
 include('../datalayer/server.php');
 
 try {
-    // Check if a competition ID is provided
+    // Check if a competition ID and season ID are provided
     $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 0;
+    $seasonId = isset($_GET['season_id']) ? (int)$_GET['season_id'] : 0;
 
-    if ($competitionId === 0) {
-        die('<h2>No valid competition ID provided</h2>');
+    if ($competitionId === 0 || $seasonId === 0) {
+        die('<h2>No valid competition or season ID provided</h2>');
     }
 
     // Query to find the basketball competition details
@@ -21,14 +22,15 @@ try {
 
     $gender = $competition['gender'];
 
-    // Clear the standings table for the specific competition
-    $pdo->prepare("DELETE FROM basketball_standings WHERE competition_id = :competition_id")->execute(['competition_id' => $competitionId]);
+    // Clear the standings table for the specific competition and season
+    $pdo->prepare("DELETE FROM basketball_standings WHERE competition_id = :competition_id AND season_id = :season_id")->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     // Insert the calculated standings into the standings table
     $query = "
-    INSERT INTO basketball_standings (competition_id, team_id, team_name, games_played, wins, losses, points_for, points_against, win_percentage)
+    INSERT INTO basketball_standings (competition_id, season_id, team_id, team_name, games_played, wins, losses, points_for, points_against, win_percentage)
     SELECT
         :competition_id AS competition_id,
+        :season_id AS season_id,
         t.id AS team_id,
         t.team_name AS team_name,
         COALESCE(SUM(games_played), 0) AS games_played,
@@ -52,7 +54,7 @@ try {
         INNER JOIN 
             basketball_teams home ON fm.home_team_id = home.id
         WHERE 
-            fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND home.gender = :gender
+            fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND fm.season_id = :season_id AND home.gender = :gender
 
         UNION ALL
 
@@ -68,7 +70,7 @@ try {
         INNER JOIN 
             basketball_teams away ON fm.away_team_id = away.id
         WHERE 
-            fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND away.gender = :gender
+            fm.match_date <= CURDATE() AND fm.competition_id = :competition_id AND fm.season_id = :season_id AND away.gender = :gender
     ) AS match_results ON t.id = match_results.team_id
     WHERE t.gender = :gender
     GROUP BY t.id, t.team_name
@@ -76,7 +78,7 @@ try {
     ";
 
     $stmt = $pdo->prepare($query);
-    $stmt->execute(['competition_id' => $competitionId, 'gender' => $gender]);
+    $stmt->execute(['competition_id' => $competitionId, 'season_id' => $seasonId, 'gender' => $gender]);
 
     // Fetch and display the standings
     $result = $pdo->prepare("
@@ -90,11 +92,11 @@ try {
             basketball_standings, 
             (SELECT @curRank := 0, @prevPercentage := NULL, @prevPointsFor := NULL, @prevPointsAgainst := NULL) AS vars
         WHERE 
-            competition_id = :competition_id
+            competition_id = :competition_id AND season_id = :season_id
         ORDER BY 
             win_percentage DESC, points_for DESC, points_against ASC, team_name ASC
     ");
-    $result->execute(['competition_id' => $competitionId]);
+    $result->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     echo "<h2>Basketball Standings for " . htmlspecialchars($competition['competition_name']) . "</h2>";
     echo "<table>
@@ -129,3 +131,4 @@ try {
     echo '<h2>An error occurred while fetching the standings. Please try again later.</h2>';
     error_log('Database error: ' . $e->getMessage());
 }
+
