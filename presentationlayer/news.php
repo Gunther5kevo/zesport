@@ -51,7 +51,7 @@ $totalPages = ceil($totalPosts / $perPage);
 
     <main>
         <section class="hero-section">
-            <div class="container">
+            <div class="hero-text">
                 <h1>Welcome to ZEsport News</h1>
                 <p>Your source for the latest sports news and highlights.</p>
             </div>

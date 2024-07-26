@@ -7,51 +7,52 @@
     <title>Zesport</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    .custom-navbar {
-        background-color: #1C1D3C !important;
-        font-family: "Times New Roman", Times, serif;
-        font-size: 18px;
-        line-height: 1.2em;
-        color: #ffffff;
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
+       .custom-navbar {
+    background-color: #1C1D3C !important;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    line-height: 1.2em;
+    color: #ffffff;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-    .custom-navbar .navbar-nav .nav-link {
-        color: #ffffff !important;
-        text-transform: capitalize;
-        margin-right: 10px;
-        white-space: nowrap;
-        /* Prevents wrapping to the next line */
-    }
+.custom-navbar .navbar-nav .nav-link {
+    color: #ffffff !important;
+    text-transform: capitalize;
+    margin-right: 10px;
+    white-space: nowrap;
+}
 
-    .custom-navbar .navbar-brand {
-        margin-left: 70px;
-    }
+.custom-navbar .navbar-brand {
+    margin-left: 0; /* Remove extra margin from the logo */
+}
 
-    .navbar-nav {
-        flex-wrap: nowrap;
-        /* Prevents wrapping of the entire navbar */
-    }
+.navbar-nav {
+    flex-wrap: nowrap;
+}
 
-    body {
-        margin: 0;
-        padding: 0;
-        height: 2000px;
-        /* Just for testing scrolling behavior */
-    }
+.navbar-nav.ml-auto {
+    margin-left: auto; /* Push the navbar links to the far right */
+}
 
-    /* Hover dropdown styles */
-    .nav-item.dropdown:hover .dropdown-menu {
-        display: block;
-    }
+body {
+    margin: 0;
+    padding: 0;
+    height: 2000px; /* Just for testing scrolling behavior */
+}
 
-    .dropdown-menu {
-        margin-top: 0;
-        /* Adjust if necessary */
-    }
+/* Hover dropdown styles */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    margin-top: 0; /* Adjust if necessary */
+}
+
     </style>
 </head>
 
@@ -59,15 +60,15 @@
     <nav class="navbar navbar-expand-lg navbar-dark custom-navbar sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="../presentationlayer/assets/img/zetechlogo.png" alt="Zetech University "
-                    style="max-width: 20%; height: auto;" class="d-inline-block align-top">
+                <img src="../presentationlayer/assets/img/logo.png" alt="Zetech University"
+                    style="max-width: 100%; height: auto;" class="d-inline-block align-top">
             </a>
             <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> <!-- Use ms-auto to align to the right -->
                     <li class="nav-item">
                         <a class="nav-link" href="../presentationlayer/index.php">Home</a>
                     </li>

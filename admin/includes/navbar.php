@@ -28,10 +28,10 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <img src="../presentationlayer/assets/img/zetechlogo.jpg" alt="Zetech University" style="max-width: 50%; height: auto;" class="d-inline-block align-top">
+            <img src="../presentationlayer/assets/img/logo.png" alt="Zetech University" style="max-width: 100%; height: auto;" class="d-inline-block align-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -46,15 +46,9 @@
                         Sports
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="sportsDropdown">
-                        <li>
-                            <a class="dropdown-item" href="../presentationlayer/football.php">Football</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="../presentationlayer/basketball.php">Basketball</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="../presenatationlayer/rugby.php">Rugby</a>
-                        </li>
+                        <li><a class="dropdown-item" href="../presentationlayer/football.php">Football</a></li>
+                        <li><a class="dropdown-item" href="../presentationlayer/basketball.php">Basketball</a></li>
+                        <li><a class="dropdown-item" href="../presentationlayer/rugby.php">Rugby</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -86,4 +80,5 @@
 <!-- Include necessary scripts for Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
+</body>
+</html>

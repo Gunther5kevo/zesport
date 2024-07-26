@@ -3,7 +3,7 @@
         'name' => 'guru/zesport',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ff48c9a42d7c5cf286cdd5c090707d3ee35863bc',
+        'reference' => 'bb5fd456f6c9edbeaaf2cae7323be02d741a3530',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -40,7 +40,7 @@
         'guru/zesport' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ff48c9a42d7c5cf286cdd5c090707d3ee35863bc',
+            'reference' => 'bb5fd456f6c9edbeaaf2cae7323be02d741a3530',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -117,6 +117,15 @@
             'install_path' => __DIR__ . '/../phpdocumentor/type-resolver',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.9.1',
+            'version' => '6.9.1.0',
+            'reference' => '039de174cd9c17a8389754d3b877a2ed22743e18',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'phpspec/prophecy' => array(
             'pretty_version' => 'v1.19.0',

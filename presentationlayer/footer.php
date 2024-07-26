@@ -25,7 +25,7 @@
     <div class="contact-info">
         <h3>Contact Us</h3>
         <p>P.O. Box 2768 00200, Nairobi.</p>
-        <p>Email: alumni@zetech.ac.ke</p>
+        <p>Email: info@zetech.ac.ke</p>
         <p>Office Mobile: 0716600116</p>
         <p>Call Center 0719 034500</p>
         <div class="socials">

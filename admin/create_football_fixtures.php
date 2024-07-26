@@ -2,11 +2,6 @@
 include('includes/header.php');
 
 try {
-    // Fetch competitions from the database
-    $sql_competitions = "SELECT id, competition_name FROM competitions ORDER BY competition_name";
-    $stmt_competitions = $pdo->query($sql_competitions);
-    $competitions = $stmt_competitions->fetchAll(PDO::FETCH_ASSOC);
-
     // Fetch seasons from the database
     $sql_seasons = "SELECT id, season FROM seasons ORDER BY season DESC";
     $stmt_seasons = $pdo->query($sql_seasons);
@@ -47,9 +42,6 @@ try {
                         <label for="competition">Competition:</label>
                         <select id="competition" name="competition" class="form-control" required>
                             <option value="" selected>No competition</option>
-                            <?php foreach ($competitions as $competition): ?>
-                                <option value="<?= htmlspecialchars($competition['id']) ?>"><?= htmlspecialchars($competition['competition_name']) ?></option>
-                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -99,31 +91,86 @@ try {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    function getTeams() {
+    function getCompetitions() {
+        var seasonId = $('#season').val();
         var gender = $('#gender').val();
         $.ajax({
-            url: '../datalayer/fetch_teams.php',
+            url: '../datalayer/fetch_competitions.php', // Ensure this path is correct
             method: 'GET',
-            data: { gender: gender },
+            data: { season: seasonId, gender: gender },
             dataType: 'json',
-            success: function(teams) {
-                var homeTeamSelect = $('#home_team');
-                var awayTeamSelect = $('#away_team');
-                homeTeamSelect.empty().append('<option value="" disabled selected>Select a team</option>');
-                awayTeamSelect.empty().append('<option value="" disabled selected>Select a team</option>');
-                $.each(teams, function(index, team) {
-                    homeTeamSelect.append('<option value="' + team.id + '">' + team.team_name + '</option>');
-                    awayTeamSelect.append('<option value="' + team.id + '">' + team.team_name + '</option>');
-                });
+            success: function(response) {
+                var competitionSelect = $('#competition');
+                competitionSelect.empty().append('<option value="" selected>No competition</option>');
+                if (response.error) {
+                    console.error('Error:', response.error);
+                } else {
+                    $.each(response, function(index, competition) {
+                        competitionSelect.append('<option value="' + competition.id + '">' + competition.competition_name + '</option>');
+                    });
+                }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.error("Error fetching teams: ", textStatus, errorThrown);
+                console.error("Error fetching competitions:", textStatus, errorThrown);
             }
         });
     }
 
-    $('#gender').change(getTeams);
+    function getTeams() {
+        var gender = $('#gender').val();
+        $.ajax({
+            url: '../datalayer/fetch_teams.php', // Ensure this path is correct
+            method: 'GET',
+            data: { gender: gender },
+            dataType: 'json',
+            success: function(response) {
+                var homeTeamSelect = $('#home_team');
+                var awayTeamSelect = $('#away_team');
+                homeTeamSelect.empty().append('<option value="" disabled selected>Select a team</option>');
+                awayTeamSelect.empty().append('<option value="" disabled selected>Select a team</option>');
+                if (response.error) {
+                    console.error('Error:', response.error);
+                } else {
+                    $.each(response, function(index, team) {
+                        homeTeamSelect.append('<option value="' + team.id + '">' + team.team_name + '</option>');
+                        awayTeamSelect.append('<option value="' + team.id + '">' + team.team_name + '</option>');
+                    });
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error fetching teams:", textStatus, errorThrown);
+            }
+        });
+    }
+
+    function updateTeamOptions() {
+        var homeTeamId = $('#home_team').val();
+        var awayTeamId = $('#away_team').val();
+        var homeTeamSelect = $('#home_team');
+        var awayTeamSelect = $('#away_team');
+
+        homeTeamSelect.find('option').show();
+        awayTeamSelect.find('option').show();
+
+        if (homeTeamId) {
+            awayTeamSelect.find('option[value="' + homeTeamId + '"]').hide();
+        }
+
+        if (awayTeamId) {
+            homeTeamSelect.find('option[value="' + awayTeamId + '"]').hide();
+        }
+    }
+
+    $('#season').change(getCompetitions);
+    $('#gender').change(function() {
+        getTeams();
+        getCompetitions();
+    });
+    $('#home_team').change(updateTeamOptions);
+    $('#away_team').change(updateTeamOptions);
+
     getTeams(); // Initial call to load teams based on the default gender selection
+    getCompetitions(); // Initial call to load competitions based on the default gender and season selection
 });
 </script>
 
@@ -131,4 +178,4 @@ $(document).ready(function() {
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
-
+?>

@@ -86,6 +86,7 @@ nav li {
     border-radius: 20px;
     color: white;
     min-height: 30vh;
+    margin: 15px;
 }
 
 .form h2 {

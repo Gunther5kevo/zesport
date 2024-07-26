@@ -1,1 +1,0 @@
-<?php include('./fkf_rugby.php');?>

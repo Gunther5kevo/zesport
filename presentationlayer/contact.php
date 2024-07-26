@@ -34,7 +34,7 @@
                         class="map" allowfullscreen="" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
                 <div class="form">
-                    <form class="row g-3" method="POST" action="">
+                    <form class="row g-3" method="POST" action="../datalayer/contact.php">
                         <div class="col-md-6">
                             <label for="fname" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="fname" name="fname" aria-label="First name"

@@ -37,6 +37,7 @@ class ComposerStaticInit59bc1a4750ac19c58fd8251687708a08
             'Prophecy\\' => 9,
             'PhpParser\\' => 10,
             'PHPStan\\PhpDocParser\\' => 21,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'G' => 
         array (
@@ -120,6 +121,10 @@ class ComposerStaticInit59bc1a4750ac19c58fd8251687708a08
         'PHPStan\\PhpDocParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Guru\\Zesport\\' => 
         array (

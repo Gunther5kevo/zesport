@@ -20,6 +20,7 @@ return array(
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src/Prophecy'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'PHPStan\\PhpDocParser\\' => array($vendorDir . '/phpstan/phpdoc-parser/src'),
+    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Guru\\Zesport\\' => array($baseDir . '/src'),
     'FFMpeg\\' => array($vendorDir . '/php-ffmpeg/php-ffmpeg/src/FFMpeg'),
     'Evenement\\' => array($vendorDir . '/evenement/evenement/src'),
