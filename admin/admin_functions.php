@@ -374,9 +374,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_rugby_scores'])
     
         try {
             $stmt->execute();
-            echo "<div class='alert alert-success'>Post created successfully.</div>";
+           
+            redirect('create_blog_post.php', "Blog Posts Created Successfuly!");
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>Error creating post: " . $e->getMessage() . "</div>";
+            redirect('create_blog_post.php', "Database error: " . $e->getMessage());
         }
     }
 

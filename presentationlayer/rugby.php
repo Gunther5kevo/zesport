@@ -312,10 +312,10 @@
                 url: '../datalayer/fetch_rugby_standings.php',
                 data: {
                     competition_id: competitionId,
-                    season_id: seasonId // Pass seasonId to fetch standings for the selected season
+                    season_id: seasonId 
                 },
                 success: function(response) {
-                    $('#standings').html(response); // Update standings tab content
+                    $('#standings').html(response); 
                 },
                 error: function(xhr, status, error) {
                     console.error('Error fetching standings:', error);

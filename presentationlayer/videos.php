@@ -21,13 +21,13 @@ include('../datalayer/video-section.php');
 </head>
 
 <body>
-    <?php include('header.php'); ?>
+   
 
     <main>
-        <section class="hero-section">
-            <div class="container">
-                <h1>Welcome to ZEsport Videos</h1>
-                <p>Enjoy the latest sports videos and highlights.</p>
+    <section class="hero-section">
+            <div class="hero-text">
+                <h1>Welcome to ZEsport News</h1>
+                <p>Your source for the latest sports news and highlights.</p>
             </div>
         </section>
 

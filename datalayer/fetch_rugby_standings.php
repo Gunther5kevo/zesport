@@ -1,27 +1,21 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include('../datalayer/server.php');
 
 try {
-    // Get competition_id, gender, and season_id from the query parameters
-    $competitionId = isset($_GET['competition_id']) ? (int)$_GET['competition_id'] : 1; // Default to 1 if not provided
-    $gender = isset($_GET['gender']) ? $_GET['gender'] : 'male'; // Default to 'male' if not provided
-    $seasonId = isset($_GET['season_id']) ? (int)$_GET['season_id'] : 1; // Default to 1 if not provided
-
-    // Validate competitionId, gender, and seasonId
-    if ($competitionId <= 0) {
-        die('<h2>Invalid competition ID provided</h2>');
-    }
-
-    if (!in_array($gender, ['male', 'female'])) {
-        die('<h2>Invalid gender provided</h2>');
-    }
-
-    if ($seasonId <= 0) {
-        die('<h2>Invalid season ID provided</h2>');
-    }
+    $competitionId = isset($_GET['competitionId']) ? $_GET['competitionId'] : null;
+    $seasonId = isset($_GET['seasonId']) ? $_GET['seasonId'] : null;
+    $gender = isset($_GET['gender']) ? $_GET['gender'] : null;
+    
+    // Begin transaction
+    $pdo->beginTransaction();
 
     // Clear the standings table for the specific competition and season
-    $pdo->prepare("DELETE FROM rugby_standings WHERE competition_id = :competition_id AND season_id = :season_id")->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
+    $deleteStmt = $pdo->prepare("DELETE FROM rugby_standings WHERE competition_id = :competition_id AND season_id = :season_id");
+    $deleteStmt->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     // Insert the calculated standings into the standings table
     $query = "
@@ -106,6 +100,9 @@ try {
     $stmt = $pdo->prepare($query);
     $stmt->execute(['competition_id' => $competitionId, 'season_id' => $seasonId, 'gender' => $gender]);
 
+    // Commit transaction
+    $pdo->commit();
+
     // Fetch and display the standings
     $result = $pdo->prepare("
         SELECT 
@@ -124,7 +121,7 @@ try {
     $result->execute(['competition_id' => $competitionId, 'season_id' => $seasonId]);
 
     echo "<h2>Rugby Standings</h2>";
-    echo "<table>
+    echo "<table class='table table-bordered'>
             <tr>
                 <th>Position</th>
                 <th>Team</th>
@@ -156,6 +153,8 @@ try {
     echo "</table>";
 
 } catch (PDOException $e) {
+    $pdo->rollBack(); // Roll back the transaction if something failed
     echo '<h2>An error occurred while fetching the standings. Please try again later.</h2>';
     error_log('Database error: ' . $e->getMessage());
 }
+?>

@@ -58,15 +58,15 @@ $(document).ready(function() {
             url: '../datalayer/fetch_fixtures.php',
             dataType: 'json',
             data: {
-                competition_id: 1,
-                season_id: 1
+                competition_id: 1, // Example competition ID
+                season_id: 1 // Example season ID
             },
             success: function(response) {
                 if (response.error) {
                     console.error('Error fetching upcoming matches:', response.error);
                     return;
                 }
-
+    
                 if (Array.isArray(response)) {
                     const upcomingMatchesHtml = response.map(match => 
                         `<li class="list-group-item">${match.match_date} - ${match.home_team} vs ${match.away_team}</li>`
@@ -81,6 +81,9 @@ $(document).ready(function() {
             }
         });
     }
+    
+   
+    
 
     // Initialize the dashboard
     fetchMetrics();
